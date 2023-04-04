@@ -5,7 +5,7 @@
 
 ## Техническое задание
 1. Создать базу данных на основе ORM sqlalchemy с таблицами: USERS, GROUPS, USERS_TO_GROUP, MESSAGES, WORKS, WORKS_RESULTS
-2. Создание REST-API для моделей USERS, GROUPS, WORKS, WORKS_RESULTS
+2. Создание REST-API для моделей GROUPS, WORKS, WORKS_RESULTS
 3. Регистрация пользователей в системе (ученик/учитель)
 4. Изменение данных профиля
 5. Создание, изменение, удаление тестов (со стороны учителя)
