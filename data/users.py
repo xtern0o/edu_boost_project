@@ -19,16 +19,19 @@ class Users(SqlAlchemyBase):
     # Поля таблица
     id = sqlalchemy.Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
     password = sqlalchemy.Column(sqlalchemy.String)
-    email = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    first_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    second_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    profile_photo = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    email = sqlalchemy.Column(sqlalchemy.String)
+    first_name = sqlalchemy.Column(sqlalchemy.String)
+    second_name = sqlalchemy.Column(sqlalchemy.String)
+    profile_photo = sqlalchemy.Column(sqlalchemy.BLOB, default=None)
+    user_type = sqlalchemy.Column(sqlalchemy.String)
 
     # orm-отношения
     groups = orm.relationship('Groups', secondary='users_to_groups', backref='users')
     admin = orm.relationship('Groups', back_populates='teacher')
     sender = orm.relationship('Messages', back_populates='sender')
+    creator = orm.relationship('Works', back_populates='creator')
 
+    # функции
     def set_password(self, password):
         self.password = generate_password_hash(password)
 

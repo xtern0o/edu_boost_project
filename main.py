@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/index')
 def index():
-    return '''Spermum education'''
+    return
 
 
 if __name__ == '__main__':
