@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Регистрация</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.email(class="form-control bottom-decoration form-child", placeholder=form.email.label.text) }}
+        {% for error in form.email.errors %}
+        <p class="alert alert-danger align-center" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+        {{ form.first_name(class="form-control bottom-decoration form-child", placeholder=form.first_name.label.text) }}
+        {{ form.second_name(class="form-control bottom-decoration form-child", placeholder=form.second_name.label.text)
+        }}
+    </div>
+    <div class="form-group">
+        <div>
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#inviteCollapse" role="button"
+               aria-expanded="false" aria-controls="inviteCollapse">
+                Link with href
+            </a>
+        </div>
+        <div class="collapse" id="inviteCollapse">
+            <div class="card card-body">
+                {{ form.invite_code(class="form-control bottom-decoration form-child", placeholder=form.invite_code.label.text) }}
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
