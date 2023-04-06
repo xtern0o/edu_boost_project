@@ -7,6 +7,8 @@ from data.groups import Groups
 from data.messages import Messages
 from data.questions import Questions
 
+from forms.login_form import LoginForm
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "maxkarnlol"
@@ -23,7 +25,21 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template("")
+    return ""
+
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(Users).filter(Users.email == form.email.data).first()
+        if user:
+            if user.check_password(form.password.data):
+                login_user(user, remember=form.remember_me.data)
+                return redirect(f"/profile/{user.id}")
+            return render_template("login.html", message="Неверный логин или пароль", form=form)
+    return render_template("login.html", title="Авторизация", form=form)
 
 
 if __name__ == '__main__':
