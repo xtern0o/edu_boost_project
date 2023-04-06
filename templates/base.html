@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+          crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header>
+    <div class="classic-container bg-light bottom-decoration">
+        <div class="row">
+            <div class="col">
+                <h1>Spermum_edu</h1>
+            </div>
+            <div class="col">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button">
+                                {{ user.first_name }} {{ user.second_name }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/profile">Личный кабинет</a></li>
+                                <li><a class="dropdown-item" href="/chat">Чат</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Выйти</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <div class="btn-toolbar mb-3" role="toolbar">
+                            <div class="btn-group me-2" role="group">
+                                <a type="button" class="btn btn-outline-secondary" href="/login">Войти</a>
+                                <a type="button" class="btn btn-outline-secondary" href="/register">Зарегистрироваться</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<section class="container-fluid flex-grow-1">
+    <div class="classic-container bg-light upper-decoration">
+        {% block content %}
+        {% endblock %}
+    </div>
+</section>
+<footer>
+    <p class="p-3 mb-2 bg-dark text-muted text-center fs-6" style="margin-bottom: 0;">copyright: 2023</p>
+</footer>
+</body>
+</html>
