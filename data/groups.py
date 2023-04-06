@@ -8,7 +8,9 @@ class Groups(SqlAlchemyBase):
 
     # Поля таблицы
     id = sqlalchemy.Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
+    name = sqlalchemy.Column(sqlalchemy.String)
     teacher_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'))
+    code = sqlalchemy.Column(sqlalchemy.String, unique=True)
 
     # orm-отношения
     students = orm.relationship('Users', secondary='users_to_groups', backref='students')
