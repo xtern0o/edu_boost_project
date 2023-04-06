@@ -26,7 +26,7 @@ class Users(SqlAlchemyBase):
     user_type = sqlalchemy.Column(sqlalchemy.String)
 
     # orm-отношения
-    groups = orm.relationship('Groups', secondary='users_to_groups', backref='users')
+    groups = orm.relationship('Groups', secondary='users_to_groups', backref='groups')
     admin = orm.relationship('Groups', back_populates='teacher')
     sender = orm.relationship('Messages', back_populates='sender')
     creator = orm.relationship('Works', back_populates='creator')

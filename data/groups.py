@@ -11,7 +11,7 @@ class Groups(SqlAlchemyBase):
     teacher_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'))
 
     # orm-отношения
-    students = orm.relationship('Users', secondary='users_to_groups', backref='groups')
-    message = orm.relationship('Messages', backref='group')
+    students = orm.relationship('Users', secondary='users_to_groups', backref='students')
+    message = orm.relationship('Messages', back_populates='group')
     teacher = orm.relationship('Users')
-    works = orm.relationship("Works", secondary="works_to_groups", backref="groups")
+    works = orm.relationship("Works", secondary="works_to_groups", backref='works')

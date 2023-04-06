@@ -21,6 +21,6 @@ class Works(SqlAlchemyBase):
     name = sqlalchemy.Column(sqlalchemy.String)
 
     # orm-отношения
-    groups = orm.relationship('Groups', secondary='works_to_groups', backref="works")
+    groups = orm.relationship('Groups', secondary='works_to_groups', backref="in_groups")
     creator = orm.relationship('Users')
     question = orm.relationship("Questions", back_populates="work")
