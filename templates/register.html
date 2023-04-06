@@ -28,5 +28,23 @@
             </div>
         </div>
     </div>
+    <div class="form-group">
+        <div class="form-check">
+            {{ form.user_type_teacher(class="form-check-input form-child") }}
+            {{ form.user_type_teacher.label }}
+        </div>
+        <div class="form-check">
+            {{ form.user_type_student(class="form-check-input form-child") }}
+            {{ form.user_type_student.label }}
+        </div>
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+        {% if message %}
+        <div class="alert alert-dark form-child">
+            {{ message }}
+        </div>
+        {% endif %}
+    </div>
 </form>
 {% endblock %}

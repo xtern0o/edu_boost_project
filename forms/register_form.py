@@ -10,3 +10,4 @@ class RegisterForm(FlaskForm):
     invite_code = StringField("Пригласительный код")
     user_type_teacher = RadioField("Учитель")
     user_type_student = RadioField("Ученик")
+    submit = SubmitField("Зарегистрироваться")
