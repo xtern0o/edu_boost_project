@@ -42,6 +42,11 @@ def login():
     return render_template("login.html", title="Авторизация", form=form)
 
 
+@app.route('/chat')
+def chat():
+    return render_template('chat.html')
+
+
 if __name__ == '__main__':
     db_session.global_init('db/spermum.db')
     app.run()
