@@ -38,8 +38,15 @@ def login():
             if user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
                 return redirect(f"/profile/{user.id}")
-            return render_template("login.html", message="Неверный логин или пароль", form=form)
+            return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
+        return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
     return render_template("login.html", title="Авторизация", form=form)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 if __name__ == '__main__':

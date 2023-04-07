@@ -24,11 +24,13 @@
     </div>
     <div class="form-group">
         {{ form.submit(class="btn btn-primary") }}
-        {% if message %}
+    </div>
+    {% if message %}
+    <div class="form-group">
         <div class="alert alert-dark form-child">
             {{ message }}
         </div>
-        {% endif %}
     </div>
+    {% endif %}
 </form>
 {% endblock %}

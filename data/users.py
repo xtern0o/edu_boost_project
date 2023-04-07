@@ -20,6 +20,7 @@ class Users(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
     password = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(sqlalchemy.String)
+    remember = sqlalchemy.Column(sqlalchemy.Boolean)
     first_name = sqlalchemy.Column(sqlalchemy.String)
     second_name = sqlalchemy.Column(sqlalchemy.String)
     profile_photo = sqlalchemy.Column(sqlalchemy.BLOB, default=None)
