@@ -29,9 +29,8 @@
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <div class="input-group mb-3">
-            {{ form.message(class="form-control", placeholder="Введите сообщение",
-            aria_label="Recipient's username", aria_describedby="button-addon2") }}
-            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+            {{ form.message(class="form-control", placeholder=form.message.label.text) }}
+            <button class="btn btn-outline-secondary" type="submit" id="send_message">
                 <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt=""></button>
         </div>
     </form>
