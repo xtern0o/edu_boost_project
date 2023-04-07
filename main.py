@@ -25,7 +25,7 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/index')
 def index():
-    return ""
+    return "Index"
 
 
 @app.route("/login", methods=["POST", "GET"])
