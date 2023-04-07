@@ -8,6 +8,7 @@ from data.messages import Messages
 from data.questions import Questions
 
 from forms.login_form import LoginForm
+from forms.register_form import RegisterForm
 
 
 app = Flask(__name__)
@@ -41,6 +42,28 @@ def login():
             return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
         return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
     return render_template("login.html", title="Авторизация", form=form)
+
+
+@app.route("/registration", methods=["POST", "GET"])
+def registration():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = Users(
+            email=form.email.data,
+            remember=form.remember.data,
+            first_name=form.first_name.data,
+            second_name=form.second_name.data,
+        )
+        if form.user_type_student:
+            user.user_type = "student"
+        else:
+            user.user_type = "teacher"
+        user.set_password(form.password.data)
+        db_sess.commit()
+        login_user(user, remember=form.remember.data)
+        return redirect("/profile")
+    return render_template("register.html", title="Регистрация", form=form)
 
 
 @app.route("/logout")

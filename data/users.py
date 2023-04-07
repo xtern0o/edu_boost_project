@@ -24,7 +24,7 @@ class Users(SqlAlchemyBase):
     first_name = sqlalchemy.Column(sqlalchemy.String)
     second_name = sqlalchemy.Column(sqlalchemy.String)
     profile_photo = sqlalchemy.Column(sqlalchemy.BLOB, default=None)
-    user_type = sqlalchemy.Column(sqlalchemy.String)
+    user_type = sqlalchemy.Column(sqlalchemy.String, default="student")
 
     # orm-отношения
     groups = orm.relationship('Groups', secondary='users_to_groups', backref='groups')
