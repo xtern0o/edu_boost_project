@@ -9,6 +9,7 @@ from data.questions import Questions
 
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
+from forms.chat_form import ChatForm
 
 
 app = Flask(__name__)
@@ -64,6 +65,15 @@ def registration():
         login_user(user, remember=form.remember.data)
         return redirect("/profile")
     return render_template("register.html", title="Регистрация", form=form)
+
+
+@login_required
+@app.route('/chat', methods=['POST', 'GET'])
+def chat():
+    form = ChatForm()
+    if form.validate_on_submit():
+        print(form.message.data)
+    return render_template('chat.html', title='Чат', form=form)
 
 
 @app.route("/logout")
