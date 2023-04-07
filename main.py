@@ -8,6 +8,7 @@ from data.messages import Messages
 from data.questions import Questions
 
 from forms.login_form import LoginForm
+from forms.chat_form import ChatForm
 
 
 app = Flask(__name__)
@@ -42,9 +43,12 @@ def login():
     return render_template("login.html", title="Авторизация", form=form)
 
 
-@app.route('/chat')
+@app.route('/chat', methods=['POST', 'GET'])
 def chat():
-    return render_template('chat.html')
+    form = ChatForm()
+    if form.validate_on_submit():
+        print(form.message.data)
+    return render_template('chat.html', title='Чат', form=form)
 
 
 if __name__ == '__main__':

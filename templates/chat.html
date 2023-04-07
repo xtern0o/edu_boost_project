@@ -2,21 +2,20 @@
 
 {% block content %}
 <div class="form-child">
-
     <div class="row">
         <div class="col"><h2 class="text-by-left nowrap">Название группы</h2></div>
         <div class="col d-md-flex justify-content-md-end">
             <button type="button" class="btn btn-primary text-by-right" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">
-                группы
+                    data-bs-target="#groupModal">
+                Группы
             </button>
         </div>
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="groupModal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Группы</h1>
+                    <h1 class="modal-title fs-5" id="groupModalLabel">Группы</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -27,11 +26,14 @@
     </div>
     <div class=" message-block">
     </div>
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Введите сообщение" aria-label="Recipient's username"
-               aria-describedby="button-addon2">
-        <button class="btn btn-outline-secondary" type="button" id="button-addon2">
-            <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt=""></button>
-    </div>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <div class="input-group mb-3">
+            {{ form.message(class="form-control", placeholder="Введите сообщение",
+            aria_label="Recipient's username", aria_describedby="button-addon2") }}
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+                <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt=""></button>
+        </div>
+    </form>
 </div>
 {% endblock %}
