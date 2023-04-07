@@ -1,3 +1,11 @@
+html,
+body {
+    height: 100%;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
 h1 {
     text-align: left;
     font-weight: bold;
@@ -68,4 +76,34 @@ table {
 }
 .form-child {
     margin: 2px auto;
+}
+.message-block {
+    overflow: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    height: 400px;
+    border: solid;
+    border-radius: 4px;
+    border-color: grey;
+    background: white;
+}
+.content {
+  flex: 1 0 auto;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.footer {
+    flex: 0 0 auto;
+}
+h2.text-by-left {
+    text-align: left;
+}
+.by-right-side {
+    text-align: right;
+}
+.nowrap {
+    display: inline;
 }
