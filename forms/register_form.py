@@ -8,6 +8,5 @@ class RegisterForm(FlaskForm):
     first_name = StringField("Имя", validators=[DataRequired(), Length(min=2)])
     second_name = StringField("Фамилия", validators=[DataRequired(), Length(min=2)])
     invite_code = StringField("Пригласительный код")
-    user_type_teacher = RadioField("Учитель")
-    user_type_student = RadioField("Ученик")
     submit = SubmitField("Зарегистрироваться")
+

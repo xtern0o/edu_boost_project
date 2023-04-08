@@ -9,6 +9,7 @@ from data.messages import Messages
 from data.questions import Questions
 
 from forms.login_form import LoginForm
+from forms.register_form import RegisterForm
 from forms.chat_form import ChatForm
 
 
@@ -25,7 +26,7 @@ def load_user(user_id):
     return db_sess.query(Users).get(user_id)
 
 
-@socketio.on('connect12')
+@socketio.on('send_message_json')
 def handle_connect(data):
     print(type(data))
     print('connect', data)
@@ -51,12 +52,21 @@ def login():
     return render_template("login.html", title="Авторизация", form=form)
 
 
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        pass
+    return render_template('register_version_second.html', title='Регистрация', form=form)
+
+
 @app.route('/chat', methods=['POST', 'GET'])
 def chat():
+    form = ChatForm()
     db_sess = db_session.create_session()
     user = db_sess.query(Users).filter(Users.id == 1).first()
     groups = user.groups
-    form = ChatForm()
     if form.validate_on_submit():
         print(form.message.data)
     data = {
@@ -68,4 +78,17 @@ def chat():
 
 if __name__ == '__main__':
     db_session.global_init('db/spermum.db')
+    # db_sess = db_session.create_session()
+    # user = Users()
+    # user.first_name = 'kar1na'
+    # user.second_name = 'eremeeva'
+    # user.email = '123@123.ru'
+    # user.set_password('qwerty')
+    # user.user_type = 'student'
+    # db_sess.add(user)
+    # group = Groups()
+    # db_sess.add(group)
+    # group.students.append(user)
+    # db_sess.commit()
+
     socketio.run(app, debug=False)

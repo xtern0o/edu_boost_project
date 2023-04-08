@@ -59,9 +59,10 @@
 
 
             $('#send_message_button').on('click', function() {
-                socket.emit('connect12', 
+                socket.emit('send_message_json', 
                             {'message_text': $('#message_text').val(),
-                            'message_id': '1'});
+                            'message_id': '1',
+                            'user': '123'},);
                 $('#message_text').val('');
             });
             
