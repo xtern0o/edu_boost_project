@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    <div class=" message-block">
+    <div class="message-block" id="message_block">
     </div>
     <form action="" method="post" id="form_send_message">
         {{ form.hidden_tag() }}
@@ -57,14 +57,21 @@
                 socket.send('connect');
             });
 
-            socket.on('message', function(data) {
-                socket.send('rec');
-            });
 
             $('#send_message_button').on('click', function() {
-                socket.send('was');
+                socket.emit('connect12', 
+                            {'message_text': $('#message_text').val(),
+                            'message_id': '1'});
                 $('#message_text').val('');
-            }); 
+            });
+            
+            socket.on('connect12', function() {
+                $('#message_block').append('123');
+            });
+
+            socket.on('message', function(data) {
+                socket.emit({'message_text': 'text'});
+            });
 
         });
     </script>

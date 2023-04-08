@@ -25,16 +25,16 @@ def load_user(user_id):
     return db_sess.query(Users).get(user_id)
 
 
-@socketio.on('message')
-def handle_message(message):
-    print(message)
-    send('123', broadcast=True)
+@socketio.on('connect12')
+def handle_connect(data):
+    print(type(data))
+    print('connect', data)
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return ""
+    return "index"
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -68,4 +68,4 @@ def chat():
 
 if __name__ == '__main__':
     db_session.global_init('db/spermum.db')
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=False)
