@@ -1,5 +1,6 @@
-from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify
+from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_socketio import SocketIO, send
 
 from data import db_session
 from data.users import Users
@@ -13,6 +14,7 @@ from forms.chat_form import ChatForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "maxkarnlol"
+socketio = SocketIO(app, cors_allowed_origins='*')
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -21,6 +23,12 @@ login_manager.init_app(app)
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(Users).get(user_id)
+
+
+@socketio.on('message')
+def handle_message(message):
+    print(message)
+    send('123', broadcast=True)
 
 
 @app.route('/')
@@ -45,12 +53,19 @@ def login():
 
 @app.route('/chat', methods=['POST', 'GET'])
 def chat():
+    db_sess = db_session.create_session()
+    user = db_sess.query(Users).filter(Users.id == 1).first()
+    groups = user.groups
     form = ChatForm()
     if form.validate_on_submit():
         print(form.message.data)
-    return render_template('chat.html', title='Чат', form=form)
+    data = {
+        'groups': groups,
+        'first_group': groups[0]
+    }
+    return render_template('chat.html', title='Чат', form=form, **data)
 
 
 if __name__ == '__main__':
     db_session.global_init('db/spermum.db')
-    app.run()
+    socketio.run(app, debug=True)
