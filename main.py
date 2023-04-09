@@ -1,5 +1,6 @@
-from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify
+from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_socketio import SocketIO, send
 
 from data import db_session
 from data.users import Users
@@ -14,6 +15,7 @@ from forms.chat_form import ChatForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "maxkarnlol"
+socketio = SocketIO(app, cors_allowed_origins='*')
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -22,6 +24,12 @@ login_manager.init_app(app)
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(Users).get(user_id)
+
+
+@socketio.on('send_message_json')
+def handle_connect(data):
+    print(type(data))
+    print('connect', data)
 
 
 @app.route('/')
@@ -64,16 +72,22 @@ def registration():
         db_sess.commit()
         login_user(user, remember=form.remember.data)
         return redirect("/profile")
-    return render_template("register.html", title="Регистрация", form=form)
+    return render_template("regiset_version_first.html", title="Регистрация", form=form)
 
 
-@login_required
 @app.route('/chat', methods=['POST', 'GET'])
 def chat():
     form = ChatForm()
+    db_sess = db_session.create_session()
+    user = db_sess.query(Users).filter(Users.id == 1).first()
+    groups = user.groups
     if form.validate_on_submit():
         print(form.message.data)
-    return render_template('chat.html', title='Чат', form=form)
+    data = {
+        'groups': groups,
+        'first_group': groups[0]
+    }
+    return render_template('chat.html', title='Чат', form=form, **data)
 
 
 @app.route("/logout")
@@ -84,4 +98,17 @@ def logout():
 
 if __name__ == '__main__':
     db_session.global_init('db/spermum.db')
-    app.run()
+    # db_sess = db_session.create_session()
+    # user = Users()
+    # user.first_name = 'kar1na'
+    # user.second_name = 'eremeeva'
+    # user.email = '123@123.ru'
+    # user.set_password('qwerty')
+    # user.user_type = 'student'
+    # db_sess.add(user)
+    # group = Groups()
+    # db_sess.add(group)
+    # group.students.append(user)
+    # db_sess.commit()
+
+    socketio.run(app, debug=True)
