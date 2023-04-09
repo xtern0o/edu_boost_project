@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify, session
+from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify, session, request
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO, send
 
@@ -28,8 +28,12 @@ def load_user(user_id):
 
 @socketio.on('send_message_json')
 def handle_connect(data):
-    print(type(data))
-    print('connect', data)
+    print(data)
+
+
+@socketio.on('message')
+def handle_message(message):
+    print(message)
 
 
 @app.route('/')
@@ -81,11 +85,11 @@ def chat():
     db_sess = db_session.create_session()
     user = db_sess.query(Users).filter(Users.id == 1).first()
     groups = user.groups
-    if form.validate_on_submit():
-        print(form.message.data)
+    page = request.args.get('chat_id', default=None, type=int)
+    curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
     data = {
         'groups': groups,
-        'first_group': groups[0]
+        'chosen_group': curr_page
     }
     return render_template('chat.html', title='Чат', form=form, **data)
 
@@ -98,17 +102,5 @@ def logout():
 
 if __name__ == '__main__':
     db_session.global_init('db/spermum.db')
-    # db_sess = db_session.create_session()
-    # user = Users()
-    # user.first_name = 'kar1na'
-    # user.second_name = 'eremeeva'
-    # user.email = '123@123.ru'
-    # user.set_password('qwerty')
-    # user.user_type = 'student'
-    # db_sess.add(user)
-    # group = Groups()
-    # db_sess.add(group)
-    # group.students.append(user)
-    # db_sess.commit()
 
     socketio.run(app, debug=True)
