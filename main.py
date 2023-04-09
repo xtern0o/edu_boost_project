@@ -1,3 +1,4 @@
+# 1db2c74
 from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify, request
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 
@@ -83,7 +84,6 @@ def chat():
         'first_group': groups[0]
     }
     return render_template('chat.html', title='Чат', form=form, **data)
-
 
 
 @app.route("/logout")
