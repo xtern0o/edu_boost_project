@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<<<<<<< HEAD:templates/register.html
     <h1>Регистрация</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
@@ -45,52 +44,6 @@
         </div>
         <div class="form-group">
             {{ form.submit(class="btn btn-primary") }}
-=======
-<h1>Регистрация</h1>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.email(class="form-control bottom-decoration form-child", placeholder=form.email.label.text) }}
-        {% for error in form.email.errors %}
-        <p class="alert alert-danger align-center" role="alert">
-            {{ error }}
-        </p>
-        {% endfor %}
-        {{ form.password(class="form-control upper-decoration", placeholder=form.password.label.text) }}
-        <div class="input-group">
-            {{ form.first_name(class="form-control form-child", placeholder=form.first_name.label.text) }}
-            {{ form.second_name(class="form-control form-child", placeholder=form.second_name.label.text) }}
-        </div>
-    </div>
-    <div class="form-check">
-        <input type="radio" class="form-check-input" name="teacher-button" id="teacher-button"
-               onclick="switchRadioChoiceToTeacher()" checked>
-        <label for="teacher-button" class="form-check-label">Учитель</label>
-    </div>
-    <div class="form-check">
-        <input type="radio" class="form-check-input" name="student-button" id="student-button"
-               onclick="switchRadioChoiceToStudent()">
-        <label for="student-button" class="form-check-label">Ученик</label>
-    </div>
-    <div class="form-group" id="enter-code" hidden>
-        <div>
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#inviteCollapse" role="button"
-               aria-expanded="false" aria-controls="inviteCollapse">
-                Ввести код
-            </a>
-        </div>
-        <div class="collapse" id="inviteCollapse">
-            <div class="card card-body">
-                {{ form.invite_code(class="form-control bottom-decoration form-child",
-                placeholder=form.invite_code.label.text) }}
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="form-check">
-            {{ form.remember(class="form-check-input") }}
-            {{ form.remember.label(class="form-check-label") }}
->>>>>>> fa0149f21bf08a901eddee14cf28e7a17db9de61:templates/register_version_second.html
         </div>
         <div class="form-group">
             {% if message %}
@@ -99,7 +52,6 @@
                 </div>
             {% endif %}
         </div>
-<<<<<<< HEAD:templates/register.html
     </form>
     <script defer>
         var teacher_button = document.getElementById('teacher-button');
@@ -119,26 +71,4 @@
         };
 
     </script>
-=======
-        {% endif %}
-    </div>
-</form>
-<script defer>
-    var teacher_button = document.getElementById('teacher-button');
-    var student_button = document.getElementById('student-button');
-    var enter_code_pole = document.getElementById('enter-code');
-    function switchRadioChoiceToTeacher() {
-        teacher_button.checked = true;
-        student_button.checked = false;
-        enter_code_pole.hidden = true;
-    };
-    function switchRadioChoiceToStudent() {
-        teacher_button.checked = false;
-        student_button.checked = true;
-        enter_code_pole.hidden = false;
-    };
-
-
-</script>
->>>>>>> fa0149f21bf08a901eddee14cf28e7a17db9de61:templates/register_version_second.html
 {% endblock %}
