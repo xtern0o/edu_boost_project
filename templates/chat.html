@@ -1,9 +1,90 @@
 {% extends "base.html" %}
 
 {% block content %}
+<<<<<<< HEAD
+    <div class="form-child">
+        <div class="form-group">
+            <div class="row">
+                <div class="col"><h2 class="text-by-left nowrap">{{ first_group.id }}</h2></div>
+                <div class="col d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-primary text-by-right" data-bs-toggle="modal"
+                            data-bs-target="#groupModal">
+                        Группы
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="groupModal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="groupModalLabel">Группы</h1>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                            {{ first_group.id }}
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">Группа 1</a>
+                        <a href="#" class="list-group-item list-group-item-action">Группа 2</a>
+                        <a href="#" class="list-group-item list-group-item-action">Группа 3</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="message-block" id="message_block">
+        </div>
+        <form action="" method="post" id="form_send_message">
+            {{ form.hidden_tag() }}
+            <div class="input-group mb-3">
+                {{ form.message(class="form-control", placeholder="Введите сообщение",
+            aria_label="Recipient's username", aria_describedby="send_message_button", id="message_text") }}
+                <button class="btn btn-outline-secondary" type="submit" id="send_message_button">
+                    <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt=""></button>
+            </div>
+        </form>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+        <script>
+            $(document).ready(() => {
+                $('#form_send_message').on('submit', (e) => {
+                    e.preventDefault();
+                });
+
+                const socket = io.connect('http://127.0.0.1:5000');
+                const username = '123';
+
+                socket.on('connect', function () {
+                    socket.send('connect');
+                });
+
+
+                $('#send_message_button').on('click', function () {
+                    socket.emit('send_message_json',
+                        {
+                            'message_text': $('#message_text').val(),
+                            'message_id': '1',
+                            'user': '123'
+                        },);
+                    $('#message_text').val('');
+                });
+
+                socket.on('connect12', function () {
+                    $('#message_block').append('123');
+                });
+
+                socket.on('message', function (data) {
+                    socket.emit({'message_text': 'text'});
+                });
+
+            });
+        </script>
+    </div>
+=======
 <div class="form-child">
     <div class="row">
-        <div class="col"><h2 class="text-by-left nowrap">Название группы</h2></div>
+        <div class="col"><h2 class="text-by-left nowrap">{{ first_group.id }}</h2></div>
         <div class="col d-md-flex justify-content-md-end">
             <button type="button" class="btn btn-primary text-by-right" data-bs-toggle="modal"
                     data-bs-target="#groupModal">
@@ -16,23 +97,66 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="groupModalLabel">Группы</h1>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    Список групп
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                        {{ first_group.id }}
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">Группа 1</a>
+                    <a href="#" class="list-group-item list-group-item-action">Группа 2</a>
+                    <a href="#" class="list-group-item list-group-item-action">Группа 3</a>
                 </div>
             </div>
         </div>
     </div>
-    <div class=" message-block">
+    <div class="message-block" id="message_block">
     </div>
-    <form action="" method="post">
+    <form action="" method="post" id="form_send_message">
         {{ form.hidden_tag() }}
         <div class="input-group mb-3">
-            {{ form.message(class="form-control", placeholder=form.message.label.text) }}
-            <button class="btn btn-outline-secondary" type="submit" id="send_message">
+            {{ form.message(class="form-control", placeholder="Введите сообщение",
+            aria_label="Recipient's username", aria_describedby="send_message_button", id="message_text") }}
+            <button class="btn btn-outline-secondary" type="submit" id="send_message_button">
                 <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt=""></button>
         </div>
     </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <script>
+        $(document).ready(() => {
+            $('#form_send_message').on('submit', (e) => {
+                e.preventDefault();
+            });
+
+
+            const socket = io.connect('http://127.0.0.1:5000');
+            const username = '123';
+
+            socket.on('connect', function() {
+                socket.send('connect');
+            });
+
+
+            $('#send_message_button').on('click', function() {
+                socket.emit('send_message_json', 
+                            {'message_text': $('#message_text').val(),
+                            'message_id': '1',
+                            'user': '123'},);
+                $('#message_text').val('');
+            });
+            
+            socket.on('connect12', function() {
+                $('#message_block').append('123');
+            });
+
+            socket.on('message', function(data) {
+                socket.emit({'message_text': 'text'});
+            });
+
+        });
+    </script>
 </div>
+>>>>>>> fa0149f21bf08a901eddee14cf28e7a17db9de61
 {% endblock %}

@@ -12,7 +12,7 @@
 <body>
 <div class="wrapper">
     <header>
-        <div class="classic-container bg-light bottom-decoration">
+        <div class="shadow classic-container bg-light bottom-decoration">
             <div class="container-fluid">
                 
             </div>
@@ -23,9 +23,9 @@
                 <div class="col">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         {% if current_user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button">
-                                {{ user.first_name }} {{ user.second_name }}
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle text-body-secondary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ current_user.first_name }} {{ current_user.second_name }}
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/profile">Личный кабинет</a></li>
@@ -35,13 +35,13 @@
                                 </li>
                                 <li><a class="dropdown-item" href="/logout">Выйти</a></li>
                             </ul>
-                        </li>
+                        </div>
                         {% else %}
                         <div class="btn-toolbar mb-3" role="toolbar">
                             <div class="btn-group me-2" role="group">
                                 <a type="button" class="btn btn-sm btn-outline-secondary" href="/login">Войти</a>
                                 <a type="button" class="btn btn-sm btn-outline-secondary"
-                                   href="/registration">Зарегистрироваться</a>
+                                   href="/register">Зарегистрироваться</a>
                             </div>
                         </div>
                         {% endif %}
@@ -52,14 +52,14 @@
     </header>
 
     <main class="container-fluid flex-grow-1 content">
-        <div class="classic-container bg-light upper-decoration">
+        <div class="shadow classic-container bg-light upper-decoration">
             {% block content %}
 
             {% endblock %}
         </div>
     </main>
     <footer class="footer">
-        <p class="p-3 mb-2 bg-dark text-muted text-center fs-6" style="margin-bottom: 0;">copyright: 2023</p>
+        <p class="p-3 bg-dark text-muted text-center fs-6" style="margin-bottom: 0px;">copyright: 2023</p>
     </footer>
 
 </div>
