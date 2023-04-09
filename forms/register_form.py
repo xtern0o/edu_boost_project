@@ -11,3 +11,4 @@ class RegisterForm(FlaskForm):
     remember = BooleanField("Запомнить меня")
     password = PasswordField("Пароль", validators=[DataRequired(), Length(min=6)])
     submit = SubmitField("Зарегистрироваться")
+
