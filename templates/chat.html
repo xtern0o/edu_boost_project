@@ -60,11 +60,13 @@
 
 
                 $('#send_message_button').on('click', function () {
+                    let data = sessionStorage.getItem('UserName');
+                    console.log(data);
                     socket.emit('send_message_json',
                         {
                             'message_text': $('#message_text').val(),
                             'message_id': '1',
-                            'user': '123'
+                            'user': ''
                         },);
                     $('#message_text').val('');
                 });
