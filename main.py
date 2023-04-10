@@ -110,4 +110,11 @@ def logout():
 
 if __name__ == '__main__':
     db_session.global_init("db/spermum.db")
+    db_sess = db_session.create_session()
+    group = Groups()
+    group.name = '123'
+    user = db_sess.query(Users).filter(Users.id == 1).first()
+    group.students.append(user)
+    db_sess.add(group)
+    db_sess.commit()
     socketio.run(app, debug=False)

@@ -4,7 +4,7 @@
     <div class="form-child">
         <div class="form-group">
             <div class="row">
-                <div class="col"><h2 class="text-by-left nowrap">{{ chosen_group.id }}</h2></div>
+                <div class="col"><h2 class="text-by-left nowrap">{{ chosen_group.name }}</h2></div>
                 <div class="col d-md-flex justify-content-md-end">
                     <button type="button" class="btn btn-primary text-by-right" data-bs-toggle="modal"
                             data-bs-target="#groupModal">
@@ -26,7 +26,7 @@
                             {{ chosen_group.id }}
                         </a>
                         {% for group in groups %}
-                        <a href="/chat?chat_id={{ group.id }}" class="list-group-item list-group-item-action">Группа 1</a>
+                        <a href="/chat?chat_id={{ group.id }}" class="list-group-item list-group-item-action">{{ group.name }}</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -50,7 +50,8 @@
                 $('#form_send_message').on('submit', (e) => {
                     e.preventDefault();
                 });
-
+                
+                
                 const socket = io.connect('http://127.0.0.1:5000');
                 const username = '123';
 
@@ -60,14 +61,11 @@
 
 
                 $('#send_message_button').on('click', function () {
-                    let data = sessionStorage.getItem('UserName');
-                    console.log(data);
                     socket.emit('send_message_json',
                         {
                             'message_text': $('#message_text').val(),
-                            'message_id': '1',
-                            'user': ''
-                        },);
+                            'user': sessionStorage.get('curr_group_id')
+                        });
                     $('#message_text').val('');
                 });
 
