@@ -62,13 +62,6 @@ table {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
-.mars-icon {
-    background: url("../images/img.png") no-repeat left;
-    width: 150px;
-    height: 50px;
-    display: inline;
-    float: left;
-}
 .color-div {
     width: 300px;
     height: 300px;
@@ -111,4 +104,15 @@ by-right-side {
     font-weight: bold;
     font-family: "Arial", serif;
     font-size: 40px;
+}
+.profile-box {
+    background-color: #c8c8c8;
+    padding: 3px;
+    margin: 3px;
+}
+.info_box {
+    background-color: #b5b8b1;
+    border-radius: 5px;
+    height: 70px;
+    width: auto;
 }

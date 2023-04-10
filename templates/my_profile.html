@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-box">
+    <div class="row form-group">
+        <div class="col">
+            <p class="fs-3 fw-semibold">
+                {{ current_user.first_name }} {{ current_user.second_name }}
+            </p>
+        </div>
+        <div class="col">
+            <p class="badge text-bg-light">
+                {{ current_user.user_type }}
+            </p>
+        </div>
+    </div>
+    <div class="row form-group info-box">
+        <div class="col">
+            <p class="fs-4 muted text-center">Всего решено</p>
+        </div>
+        <div class="col">
+            <p class="fs-4 text-center fw-bold" style="color: #630086">
+                {{ n_of_works }}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

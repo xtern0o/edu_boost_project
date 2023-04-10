@@ -7,6 +7,8 @@ from data.users import Users
 from data.groups import Groups
 from data.messages import Messages
 from data.questions import Questions
+from data.works import Works
+from data.solved_works import SolvedWorks
 
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
@@ -81,6 +83,27 @@ def registration():
         login_user(user, remember=form.remember.data)
         return redirect("/profile")
     return render_template("register.html", title="Регистрация", form=form)
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return redirect(f"/profile/{current_user.id}")
+
+
+@app.route("/profile/<int:user_id>")
+@login_required
+def profile_userid(user_id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(Users).get(user_id)
+    params = {
+        "n_of_works": len(db_sess.query(SolvedWorks).filter(SolvedWorks.solved_user.id == user_id))
+    }
+    if user:
+        if current_user.id == user_id:
+            return render_template("my_profile", title="Мой профиль")
+        return render_template("profile", title=f"{user.first_name} {user.second_name}", **params)
+    return "doesnt exist"
 
 
 @app.route('/chat', methods=['POST', 'GET'])

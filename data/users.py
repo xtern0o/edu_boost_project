@@ -33,6 +33,7 @@ class Users(SqlAlchemyBase, UserMixin):
     admin = orm.relationship('Groups', back_populates='teacher')
     sender = orm.relationship('Messages', back_populates='sender')
     creator = orm.relationship('Works', back_populates='creator')
+    solved_work = orm.relationship('SolvedWorks', back_populates='solved_user')
 
     # функции
     def set_password(self, password):

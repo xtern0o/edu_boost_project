@@ -24,3 +24,4 @@ class Works(SqlAlchemyBase):
     groups = orm.relationship('Groups', secondary='works_to_groups', backref="in_groups")
     creator = orm.relationship('Users')
     question = orm.relationship("Questions", back_populates="work")
+    solved = orm.relationship('SolvedWorks', back_populates="solved_work")
