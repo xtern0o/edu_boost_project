@@ -116,7 +116,7 @@ def profile_userid(user_id):
             }
         else:
             created_works = db_sess.query(Works).filter(Works.creator == user).all()
-            groups = user.groups
+            groups = db_sess.query(Groups).filter(Groups.teacher == user).all()
             params = {
                 "title": f"{user.first_name} {user.second_name}",
                 "created_works": created_works,
