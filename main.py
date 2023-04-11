@@ -100,11 +100,16 @@ def profile_userid(user_id):
     user = db_sess.query(Users).get(user_id)
     if user:
         avg_mark = list(map(lambda n: n.mark, user.solved_work))
+        works = []
+        for group in user.groups:
+            works.extend(group.works)
         params = {
             "title": f"{user.first_name} {user.second_name}",
             "n_of_works": len(user.solved_work),
             "avg_mark": "-" if not avg_mark else avg_mark,
-            "groups": user.groups
+            "groups": user.groups,
+            "works": works,
+            "len_works": len(works)
         }
         if current_user.id == user_id:
             return render_template("my_profile.html", **params)
