@@ -2,6 +2,8 @@ from flask import Flask, render_template, redirect, flash, get_flashed_messages,
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO
 
+from statistics import mean
+
 from data import db_session
 from data.users import Users
 from data.groups import Groups
@@ -96,13 +98,17 @@ def profile():
 def profile_userid(user_id):
     db_sess = db_session.create_session()
     user = db_sess.query(Users).get(user_id)
-    params = {
-        "n_of_works": len(db_sess.query(SolvedWorks).filter(SolvedWorks.solved_user.id == user_id))
-    }
     if user:
+        avg_mark = list(map(lambda n: n.mark, user.solved_work))
+        params = {
+            "title": f"{user.first_name} {user.second_name}",
+            "n_of_works": len(user.solved_work),
+            "avg_mark": "-" if not avg_mark else avg_mark,
+            "groups": user.groups
+        }
         if current_user.id == user_id:
-            return render_template("my_profile", title="Мой профиль")
-        return render_template("profile", title=f"{user.first_name} {user.second_name}", **params)
+            return render_template("my_profile.html", **params)
+        return render_template("profile.html", **params)
     return "doesnt exist"
 
 

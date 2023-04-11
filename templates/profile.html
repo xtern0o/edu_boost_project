@@ -1,10 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+<h3 class="text-center">Профиль</h3>
+<div class="form-group">
+    <div class="info-box">
+        <div class="row">
+            <div class="col">
+                <p class="fs-3 fw-bold text-center">
+                    {{ current_user.first_name }} {{ current_user.second_name }}
+                </p>
+            </div>
+            <div class="col">
+                <p class="fs-3 text-center" style="color: #630086">
+                    {{ current_user.user_type }}#{{ current_user.id }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="row">
+        <div class="col">
+            <div class="info-box">
+                <div class="row">
+                    <div class="col">
+                        <p class="fs-4 muted text-center">Решено тестов</p>
+                    </div>
+                    <div class="col">
+                        <p class="fs-4 text-center fw-bold" style="color: #630086">
+                            {{ n_of_works }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="info-box">
+                <div class="row">
+                    <div class="col">
+                        <p class="fs-4 muted text-center">Средний балл</p>
+                    </div>
+                    <div class="col">
+                        <p class="fs-4 text-center fw-bold" style="color: #630086">
+                            {{ avg_mark }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="d-grid gap-2">
+        <a class="btn btn-secondary fs-6 rounded-pill" data-bs-toggle="collapse" href="#groupsCollapse" role="button"
+           aria-expanded="false" aria-controls="groupsCollapse">Группы</a>
+    </div>
+</div>
+<div class="form-group">
+    <div class="collapse form-group" id="groupsCollapse">
+        <div class="card card-body">
+            <ul class="list-group list-group-flush">
+                {% for group in current_user.groups %}
+                <li class="list-group-item"><a class="fw-bold" href="/chat?chat_id={{ group.id }}">{{ group.name
+                    }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="d-grid gap-2">
+        <a class="btn btn-success fs-6 rounded-pill" href="/works">
+            Перейти к тестам<span class="badge rounded-pill text-bg-danger">5</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

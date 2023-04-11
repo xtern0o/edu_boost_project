@@ -11,6 +11,7 @@ class SolvedWorks(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
     work_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("works.id"))
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
+    mark = sqlalchemy.Column(sqlalchemy.Integer)
 
     # orm-отношения
     solved_work = orm.relationship("Works")
