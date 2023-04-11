@@ -1,51 +1,56 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <div class="form-child">
-        <div class="form-group">
-            <div class="row">
-                <div class="col"><h2 class="text-by-left nowrap">{{ chosen_group.name }}</h2></div>
-                <div class="col d-md-flex justify-content-md-end">
-                    <button type="button" class="btn btn-primary text-by-right" data-bs-toggle="modal"
-                            data-bs-target="#groupModal">
-                        Группы
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="groupModal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="groupModalLabel">Группы</h1>
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                            {{ chosen_group.id }}
-                        </a>
-                        {% for group in groups %}
-                        <a href="/chat?chat_id={{ group.id }}" class="list-group-item list-group-item-action">{{ group.name }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+{% block header_group_navbar %}
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasGroup" aria-labelledby="offcanvasGroupLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasGroupLabel">Группы</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="">
+        <div class="classic-containter navbar-group">
+          <a href="">
+                  123
+
+          </a>
         </div>
-        <div class="message-block" id="message_block">
-        </div>
-        <form action="" method="post" id="form_send_message">
-            {{ form.hidden_tag() }}
-            <div class="input-group mb-3">
-                {{ form.message(class="form-control", placeholder="Введите сообщение",
-            aria_label="Recipient's username", aria_describedby="send_message_button", id="message_text") }}
-                <button class="btn btn-outline-secondary" type="submit" id="send_message_button">
-                    <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt=""></button>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+<div class="form-child">
+    <div class="form-group">
+        <div class="row">
+            <div class="col"><h2 class="text-by-left nowrap">{{ chosen_group.name }}</h2>
             </div>
-        </form>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
-        <script>
+        <div class="col" align="right">
+              <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasGroup" aria-controls="offcanvasGroup">
+                Группы
+              </button>
+        </div>
+    </div>
+    </div>
+    <div class="message-block" id="message_block">
+    </div>
+    <form action="" method="post" id="form_send_message">
+        {{ form.hidden_tag() }}
+        <div class="input-group mb-3">
+            {{ form.message(class="form-control", placeholder="Введите сообщение",
+            aria_label="Recipient's username", aria_describedby="send_message_button",
+            id="message_text") }}
+            <button class="btn btn-outline-secondary" type="submit" id="send_message_button">
+                <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt="">
+            </button>
+        </div>
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <script>
             $(document).ready(() => {
                 $('#form_send_message').on('submit', (e) => {
                     e.preventDefault();
@@ -54,6 +59,23 @@
                 
                 const socket = io.connect('http://127.0.0.1:5000');
                 const username = '123';
+                
+                var getUrl = () => {
+                    return window.location.href;
+                }
+                
+                var getUrlParams = (key) => {
+                    url = getUrl();
+                    first_step = url.split('?');
+                    second_step = new Array(first_step[1]);
+                    let params = new Object();
+                    for (let i = 0; i < second_step.length; i++) {
+                        let key_and_value = second_step[i].split('=');
+                        params[key_and_value[0]] = key_and_value[1];
+                    }
+                    return params[key];
+                };
+                
 
                 socket.on('connect', function () {
                     socket.send('connect');
@@ -64,13 +86,14 @@
                     socket.emit('send_message_json',
                         {
                             'message_text': $('#message_text').val(),
-                            'user': sessionStorage.get('curr_group_id')
+                            'group_id': Number(getUrlParams('chat_id'))
                         });
                     $('#message_text').val('');
                 });
 
-                socket.on('connect12', function () {
-                    $('#message_block').append('123');
+                socket.on('updateMessage', function () {
+                    console.log('received');
+                    $('#message_block').html('<div><h3>123</h3></div>');
                 });
 
                 socket.on('message', function (data) {
@@ -78,6 +101,8 @@
                 });
 
             });
-        </script>
-    </div>
+
+
+    </script>
+</div>
 {% endblock %}
