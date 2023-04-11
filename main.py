@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, flash, get_flashed_messages,
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO
 
+import datetime as dt
 from statistics import mean
 
 from data import db_session
@@ -99,22 +100,35 @@ def profile_userid(user_id):
     db_sess = db_session.create_session()
     user = db_sess.query(Users).get(user_id)
     if user:
-        avg_mark = list(map(lambda n: n.mark, user.solved_work))
-        works = []
-        for group in user.groups:
-            works.extend(group.works)
-        params = {
-            "title": f"{user.first_name} {user.second_name}",
-            "n_of_works": len(user.solved_work),
-            "avg_mark": "-" if not avg_mark else avg_mark,
-            "groups": user.groups,
-            "works": works,
-            "len_works": len(works)
-        }
+        if user.user_type == "student":
+            marks = list(map(lambda n: n.mark, user.solved_work))
+            works = []
+            for group in user.groups:
+                works.extend(group.works)
+            params = {
+                "title": f"{user.first_name} {user.second_name}",
+                "n_of_works": len(user.solved_work),
+                "avg_mark": "-" if not marks else mean(marks),
+                "groups": user.groups,
+                "works": works,
+                "len_works": len(works),
+                "user": user
+            }
+        else:
+            created_works = db_sess.query(Works).filter(Works.creator == user).all()
+            groups = user.groups
+            params = {
+                "title": f"{user.first_name} {user.second_name}",
+                "created_works": created_works,
+                "len_created_works": len(created_works),
+                "groups": groups,
+                "len_groups": len(groups),
+                "user": user
+            }
         if current_user.id == user_id:
             return render_template("my_profile.html", **params)
         return render_template("profile.html", **params)
-    return "doesnt exist"
+    abort(404)
 
 
 @app.route('/chat', methods=['POST', 'GET'])

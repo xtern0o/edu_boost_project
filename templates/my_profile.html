@@ -7,12 +7,12 @@
         <div class="row">
             <div class="col">
                 <p class="fs-3 fw-bold text-center">
-                    {{ current_user.first_name }} {{ current_user.second_name }}
+                    {{ user.first_name }} {{ user.second_name }}
                 </p>
             </div>
             <div class="col">
                 <p class="fs-3 text-center" style="color: #630086">
-                    {{ current_user.user_type }}#{{ current_user.id }}
+                    {{ user.user_type }} #{{ user.id }}
                 </p>
             </div>
         </div>
@@ -23,28 +23,50 @@
         <div class="col">
             <div class="info-box">
                 <div class="row">
+                    {% if user.user_type == "student" %}
                     <div class="col">
-                        <p class="fs-4 muted text-center">Всего решено</p>
+                        <p class="fs-5 muted text-center">Всего решено</p>
                     </div>
                     <div class="col">
-                        <p class="fs-4 text-center fw-bold" style="color: #630086">
+                        <p class="fs-5 text-center fw-bold" style="color: #630086">
                             {{ n_of_works }}
                         </p>
                     </div>
+                    {% elif user.user_type == "teacher" %}
+                    <div class="col">
+                        <p class="fs-5 muted text-center">Составлено тестов</p>
+                    </div>
+                    <div class="col">
+                        <p class="fs-5 text-center fw-bold" style="color: #630086">
+                            {{ len_created_works }}
+                        </p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="info-box">
                 <div class="row">
+                    {% if user.user_type == "student" %}
                     <div class="col">
-                        <p class="fs-4 muted text-center">Средний балл</p>
+                        <p class="fs-5 muted text-center">Средний балл</p>
                     </div>
                     <div class="col">
-                        <p class="fs-4 text-center fw-bold" style="color: #630086">
+                        <p class="fs-5 text-center fw-bold" style="color: #630086">
                             {{ avg_mark }}
                         </p>
                     </div>
+                    {% elif user.user_type == "teacher" %}
+                    <div class="col">
+                        <p class="fs-5 muted text-center">Количество групп</p>
+                    </div>
+                    <div class="col">
+                        <p class="fs-5 text-center fw-bold" style="color: #630086">
+                            {{ len_groups }}
+                        </p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -60,13 +82,18 @@
             </div>
             <div class="collapse form-group" id="groupsCollapse">
                 <div class="card card-body">
-                    <ul class="list-group list-group-flush">
-                        {% for group in groups %}
-                        <li class="list-group-item">
-                            <a class="fw-bold" href="/chat?chat_id={{ group.id }}">{{ group.name }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
+                    <div class="list-group">
+                        {% if groups %}
+                            {% for group in groups %}
+                                <a class="list-group-item list-group-item-action fw-bold"
+                                   href="/chat?chat_id={{ group.id }}">
+                                    {{ group.name }}
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <a class="list-group-item list-group-item-action disabled">Вы не вступили ни в одну группу</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,13 +106,18 @@
             </div>
             <div class="collapse form-group" id="worksCollapse">
                 <div class="card card-body">
-                    <ul class="list-group list-group-flush">
-                        {% for work in works %}
-                        <li class="list-group-item">
-                            <a class="fw-bold" href="/works/{{ work.id }}">{{ work.name }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
+                    <div class="list-group">
+                        {% if works %}
+                            {% for work in works %}
+                                <a class="list-group-item list-group-item-action fw-bold"
+                                   href="/works/{{ work.id }}">
+                                    {{ work.name }}
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <a class="list-group-item list-group-item-action disabled">Нет работ</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
