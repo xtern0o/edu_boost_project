@@ -81,10 +81,10 @@ table {
     overflow: auto;
     margin-bottom: 15px;
     height: 400px;
-    border: solid;
-    border-radius: 4px;
+    border-radius: 6px;
     border-color: grey;
     background: white;
+    padding: 10px;
 }
 .content {
   flex: 1 0 auto;
@@ -111,4 +111,24 @@ by-right-side {
     font-weight: bold;
     font-family: "Arial", serif;
     font-size: 40px;
+}
+
+.navbar-group {
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgb(251, 251, 251);
+}
+
+a {
+    text-decoration: none;
+}
+
+.user-name-card {
+    text-align: left;
+    font-size: 40px;
+}
+
+.card-wrapper {
+    border: solid;
+    margin: 10px;
 }

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify, request, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 from data import db_session
 from data.users import Users
@@ -28,13 +28,30 @@ def load_user(user_id):
 
 @socketio.on('send_message_json')
 def handle_connect(data):
-    print(session)
-    print(data)
+    db_sess = db_session.create_session()
+    message = data.get('message_text')
+    msg_object = Messages()
+    msg_object.text = message
+    msg_object.sender_id = current_user.id
+    msg_object.group_id = data.get('group_id')
+    db_sess.add(msg_object)
+    db_sess.commit()
+    emit('updateMessage', {'message': '123'}, broadcast=True, to=data.get('group_id'))
 
 
-@socketio.on('message')
-def handle_message(message):
-    print(message)
+@socketio.on('join_group')
+def on_join(data):
+    group = data.get('group')
+    join_room(group)
+    print('user connected')
+
+
+@socketio.on('leave_group')
+def on_leave(data):
+    group = data.get('group')
+    leave_room(group)
+    print('user disconnect')
+
 
 
 @app.route('/')
@@ -90,14 +107,20 @@ def chat():
     user = db_sess.query(Users).filter(Users.id == 1).first()
     groups = user.groups
     page = request.args.get('chat_id', default=None, type=int)
-    curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
-    if form.validate_on_submit():
-        print(form.message.data)
+    if page:
+        curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
+    else:
+        curr_page = user.groups[0]
     data = {
         'groups': groups,
         'chosen_group': curr_page
     }
     return render_template('chat.html', title='Чат', form=form, **data)
+
+
+@app.route('/card')
+def card():
+    return render_template('chat_user_cart.html')
 
 
 @app.route("/logout")
@@ -109,11 +132,4 @@ def logout():
 
 if __name__ == '__main__':
     db_session.global_init("db/spermum.db")
-    db_sess = db_session.create_session()
-    group = Groups()
-    group.name = '123'
-    user = db_sess.query(Users).filter(Users.id == 1).first()
-    group.students.append(user)
-    db_sess.add(group)
-    db_sess.commit()
-    socketio.run(app, debug=False)
+    socketio.run(app, debug=True)
