@@ -84,7 +84,6 @@ def registration():
 
 
 @app.route('/chat', methods=['POST', 'GET'])
-@login_required
 def chat():
     form = ChatForm()
     db_sess = db_session.create_session()
