@@ -100,11 +100,11 @@ def profile_userid(user_id):
     db_sess = db_session.create_session()
     user = db_sess.query(Users).get(user_id)
     if user:
+        works = []
+        for group in user.groups:
+            works.extend(group.works)
         if user.user_type == "student":
             marks = list(map(lambda n: n.mark, user.solved_work))
-            works = []
-            for group in user.groups:
-                works.extend(group.works)
             params = {
                 "title": f"{user.first_name} {user.second_name}",
                 "n_of_works": len(user.solved_work),
@@ -123,7 +123,9 @@ def profile_userid(user_id):
                 "len_created_works": len(created_works),
                 "groups": groups,
                 "len_groups": len(groups),
-                "user": user
+                "user": user,
+                "works": works,
+                "len_works": len(works)
             }
         if current_user.id == user_id:
             return render_template("my_profile.html", **params)
