@@ -58,7 +58,6 @@
                 
                 
                 const socket = io.connect('http://127.0.0.1:5000');
-                const username = '123';
                 
                 var getUrl = () => {
                     return window.location.href;
@@ -76,17 +75,20 @@
                     return params[key];
                 };
                 
-                // Присоединиться к группе
-                socket.emit('join_group', {
-                    'group': Number(getUrlParams('chat_id'))
-                });
-
-                window.onbeforeunload = disconectGroup;
-                function disconectGroup() {
-                    socket.emit('leave_group', {
+                socket.on('connect', function() {
+                    socket.emit('join_group', 
+                    {
                         'group': Number(getUrlParams('chat_id'))
                     });
-                };
+                });
+                
+
+                socket.on('disconnect', function() {
+                    socket.emit('leave_group',
+                    {
+                        'group': Number(getUrlParams('chat_id'))
+                    });
+                });
 
 
                 $('#send_message_button').on('click', function () {
@@ -98,9 +100,28 @@
                     $('#message_text').val('');
                 });
 
-                socket.on('updateMessage', function () {
-                    console.log('received');
-                    $('#message_block').html('<div><h3>123</h3></div>');
+                socket.on('updateMessage', function (data) {
+                    let message_block = document.getElementById('message_block');
+                    let message = `
+                            <div class="card card-wrapper" style="border: none;">
+                                <div class="card-body user-card">
+                                    <div>
+                                        <div>
+                                            <img src="{{ url_for('static', filename='img/erdogan.jpg') }}"
+                                                class="rounded float-start small-picture" style="border-radius: 50%; margin-right: 10px;" alt="">
+                                        </div>
+                                        <div>
+                                            <h4 class="user-name-card">${data['sender_name']}</h4>
+                                        </div>
+                                        <div>
+                                            <h6 class="message-card">${data['message']}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    `
+                    message_block.innerHTML += message;
+                    message_block.scrollTop = message_block.scrollHeight;
                 });
 
                 socket.on('message', function (data) {

@@ -123,12 +123,16 @@ a {
     text-decoration: none;
 }
 
-.user-name-card {
-    text-align: left;
-    font-size: 40px;
+.small-picture {
+    height: 100px;
 }
 
-.card-wrapper {
-    border: solid;
-    margin: 10px;
+.message-card {
+    font-size: 20px;
+    text-align: left;
+}
+
+.user-name-card {
+    text-align: left;
+    font-size: 20px;
 }

@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, flash, get_flashed_messages, url_for, abort, jsonify, request, session
+from flask import Flask, render_template, redirect, flash, get_flashed_messages, \
+    url_for, abort, jsonify, request, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
@@ -36,13 +37,14 @@ def handle_connect(data):
     msg_object.group_id = data.get('group_id')
     db_sess.add(msg_object)
     db_sess.commit()
-    emit('updateMessage', {'message': '123'}, broadcast=True, to=data.get('group_id'))
+    emit('updateMessage', {'message': message, 'sender_name': f'{current_user.first_name} {current_user.second_name}'}, to=data.get('group_id'))
 
 
 @socketio.on('join_group')
 def on_join(data):
     group = data.get('group')
     join_room(group)
+    print(request.sid)
     print('user connected')
 
 
@@ -51,7 +53,6 @@ def on_leave(data):
     group = data.get('group')
     leave_room(group)
     print('user disconnect')
-
 
 
 @app.route('/')
