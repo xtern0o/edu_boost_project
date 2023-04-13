@@ -52,10 +52,17 @@
             </div>
             {% endif %}
             <div class="col" align="right">
+                {% if groups %}
                 <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasGroup" aria-controls="offcanvasGroup">
                     Группы
                 </button>
+                {% else %}
+                <button class="btn btn-secondary disabled" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasGroup" aria-controls="offcanvasGroup">
+                    Вы еще не вступили в группу
+                </button>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -109,14 +116,14 @@
                 $('#form_send_message').on('submit', (e) => {
                     e.preventDefault();
                 });
-                
-                
+
+
                 const socket = io.connect('https://a587-83-171-69-39.ngrok-free.app/');
-                
+
                 var getUrl = () => {
                     return window.location.href;
                 }
-                
+
                 var getUrlParams = (key) => {
                     url = getUrl();
                     first_step = url.split('?');
@@ -128,14 +135,14 @@
                     }
                     return params[key];
                 };
-                
+
                 socket.on('connect', function() {
-                    socket.emit('join_group', 
+                    socket.emit('join_group',
                     {
                         'group': Number(getUrlParams('chat_id'))
                     });
                 });
-                
+
 
                 socket.on('disconnect', function() {
                     socket.emit('leave_group',
@@ -184,13 +191,6 @@
                 });
 
             });
-
-
-
-
-
-
-
     </script>
 </div>
 {% endblock %}
