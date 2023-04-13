@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, flash, get_flashed_messages, \
-    url_for, abort, jsonify, request, session
+    url_for, abort, jsonify, request, session, make_response
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
@@ -102,26 +102,30 @@ def registration():
 
 
 @app.route('/chat', methods=['POST', 'GET'])
+@login_required
 def chat():
     form = ChatForm()
     db_sess = db_session.create_session()
-    user = db_sess.query(Users).filter(Users.id == 1).first()
-    groups = user.groups
+    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
     page = request.args.get('chat_id', default=None, type=int)
+    groups = user.groups
     if page:
         curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
+        messages = db_sess.query(Messages).filter(Messages.group_id == page)
+        curr_group = db_sess.query(Groups).filter(Groups.id == page).first()
+        print(groups, curr_group)
+        if curr_group not in groups:
+            abort(405)
     else:
-        curr_page = user.groups[0]
+        curr_page = page
+        messages = None
     data = {
+        'title': 'Чат',
         'groups': groups,
-        'chosen_group': curr_page
+        'chosen_group': curr_page,
+        'messages': messages
     }
-    return render_template('chat.html', title='Чат', form=form, **data)
-
-
-@app.route('/card')
-def card():
-    return render_template('chat_user_cart.html')
+    return render_template('chat.html', form=form, **data)
 
 
 @app.route("/logout")
@@ -129,6 +133,21 @@ def card():
 def logout():
     logout_user()
     return redirect("/login")
+
+
+@app.errorhandler(405)
+def not_allowed(error):
+    return render_template('405error.html'), 405
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404error.html'), 404
+
+
+@app.errorhandler(401)
+def unauthorized(error):
+    return render_template('401error.html'), 401
 
 
 if __name__ == '__main__':

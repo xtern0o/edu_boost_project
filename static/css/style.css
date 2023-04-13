@@ -124,7 +124,14 @@ a {
 }
 
 .small-picture {
-    height: 100px;
+    height: 60px;
+    width: 60px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover; 
+    border-radius: 50%; 
+    margin-right: 10px; 
+    
 }
 
 .message-card {
@@ -135,4 +142,19 @@ a {
 .user-name-card {
     text-align: left;
     font-size: 20px;
+}
+
+.very-small-picture {
+    margin-right: 15px;
+    height: 100px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover; 
+    border-radius: 50%; 
+    margin-right: 10px; 
+}
+
+.error-pic {
+    margin: auto;
+    height: 600px;
 }

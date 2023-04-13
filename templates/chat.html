@@ -2,23 +2,41 @@
 
 
 {% block header_group_navbar %}
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasGroup" aria-labelledby="offcanvasGroupLabel">
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasGroup"
+     aria-labelledby="offcanvasGroupLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasGroupLabel">Группы</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h5 class="offcanvas-title" id="offcanvasGroupLabel">Группы</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-      <div class="">
-        <div class="classic-containter navbar-group">
-          <a href="">
-                  123
-
-          </a>
+        <div class="">
+            <div class="classic-containter navbar-group">
+                <div class="list-group list-group-flush">
+                    {% for group in groups %}
+                    <a class="list-group-item list-group-item-action"
+                       href="/chat?chat_id={{ group.id }}">
+                       <div
+                       class="float-start small-picture"
+                       style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})"
+                       alt=""></div>
+                        <div>
+                            <p>
+                                {{ group.name }}
+                            </p>
+                            <p>
+                                Учитель: {{ group.teacher.first_name + ' ' +
+                                group.teacher.second_name }}
+                            </p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-      </div>
 
     </div>
-  </div>
+</div>
 {% endblock %}
 
 
@@ -26,16 +44,46 @@
 <div class="form-child">
     <div class="form-group">
         <div class="row">
+            {% if chosen_group %}
             <div class="col"><h2 class="text-by-left nowrap">{{ chosen_group.name }}</h2>
             </div>
-        <div class="col" align="right">
-              <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasGroup" aria-controls="offcanvasGroup">
-                Группы
-              </button>
+            {% else %}
+            <div class="col"><h2 class="text-by-left nowrap">Выберите группу</h2>
+            </div>
+            {% endif %}
+            <div class="col" align="right">
+                <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasGroup" aria-controls="offcanvasGroup">
+                    Группы
+                </button>
+            </div>
         </div>
     </div>
-    </div>
     <div class="message-block" id="message_block">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="card card-wrapper" style="border: none;">
+            <div class="card-body user-card">
+                <div>
+                    <div>
+                        <div
+                                class="float-start small-picture"
+                                style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})"
+                                alt=""></div>
+                    </div>
+                    <div>
+                        <h4 class="user-name-card">{{ message.sender.first_name + ' ' +
+                            message.sender.second_name }}</h4>
+                    </div>
+                    <div>
+                        <h6 class="message-card">{{ message.text }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
     </div>
     <form action="" method="post" id="form_send_message">
         {{ form.hidden_tag() }}
@@ -43,9 +91,15 @@
             {{ form.message(class="form-control", placeholder="Введите сообщение",
             aria_label="Recipient's username", aria_describedby="send_message_button",
             id="message_text") }}
+            {% if chosen_group %}
             <button class="btn btn-outline-secondary" type="submit" id="send_message_button">
                 <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt="">
             </button>
+            {% else %}
+            <button class="btn btn-outline-secondary" type="submit" id="" disabled>
+                <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt="">
+            </button>
+            {% endif %}
         </div>
     </form>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -107,8 +161,9 @@
                                 <div class="card-body user-card">
                                     <div>
                                         <div>
-                                            <img src="{{ url_for('static', filename='img/erdogan.jpg') }}"
-                                                class="rounded float-start small-picture" style="border-radius: 50%; margin-right: 10px;" alt="">
+                                            <div
+                                                class="float-start small-picture"
+                                                style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})" alt=""></div>
                                         </div>
                                         <div>
                                             <h4 class="user-name-card">${data['sender_name']}</h4>
@@ -129,6 +184,11 @@
                 });
 
             });
+
+
+
+
+
 
 
     </script>
