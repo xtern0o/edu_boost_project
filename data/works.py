@@ -18,9 +18,11 @@ class Works(SqlAlchemyBase):
     # Поля таблицы
     id = sqlalchemy.Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
     creator_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
-    name = sqlalchemy.Column(sqlalchemy.String)
+    name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
 
     # orm-отношения
     groups = orm.relationship('Groups', secondary='works_to_groups', backref="in_groups")
     creator = orm.relationship('Users')
     question = orm.relationship("Questions", back_populates="work")
+    solved = orm.relationship('SolvedWorks', back_populates="solved_work")

@@ -3,11 +3,16 @@ from flask import Flask, render_template, redirect, flash, get_flashed_messages,
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
+import datetime as dt
+from statistics import mean
+
 from data import db_session
 from data.users import Users
 from data.groups import Groups
 from data.messages import Messages
 from data.questions import Questions
+from data.works import Works
+from data.solved_works import SolvedWorks
 
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
@@ -99,6 +104,53 @@ def registration():
         login_user(user, remember=form.remember.data)
         return redirect("/profile")
     return render_template("register.html", title="Регистрация", form=form)
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return redirect(f"/profile/{current_user.id}")
+
+
+@app.route("/profile/<int:user_id>")
+@login_required
+def profile_userid(user_id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(Users).get(user_id)
+    if user:
+        works = []
+        for group in user.groups:
+            works.extend(group.works)
+        if user.user_type == "student":
+            marks = list(map(lambda n: n.mark, user.solved_work))
+            params = {
+                "title": f"{user.first_name} {user.second_name}",
+                "n_of_works": len(user.solved_work),
+                "avg_mark": "-" if not marks else mean(marks),
+                "groups": user.groups,
+                "works": works,
+                "len_works": len(works),
+                "user": user
+            }
+        else:
+            created_works = db_sess.query(Works).filter(Works.creator == user).all()
+            groups = db_sess.query(Groups).filter(Groups.teacher == user).all()
+            params = {
+                "title": f"{user.first_name} {user.second_name}",
+                "created_works": created_works,
+                "len_created_works": len(created_works),
+                "groups": groups,
+                "len_groups": len(groups),
+                "user": user,
+                "works": works,
+                "len_works": len(works)
+            }
+        if current_user.id == user_id:
+            params["my_profile"] = True
+            return render_template("profile.html", **params)
+        params["my_profile"] = False
+        return render_template("profile.html", **params)
+    abort(404)
 
 
 @app.route('/chat', methods=['POST', 'GET'])
