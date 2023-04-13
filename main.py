@@ -128,7 +128,9 @@ def profile_userid(user_id):
                 "len_works": len(works)
             }
         if current_user.id == user_id:
-            return render_template("my_profile.html", **params)
+            params["my_profile"] = True
+            return render_template("profile.html", **params)
+        params["my_profile"] = False
         return render_template("profile.html", **params)
     abort(404)
 

@@ -111,8 +111,7 @@ by-right-side {
     margin: 3px;
 }
 .info-box {
-    background-color: #b5b8b1;
-    border-radius: 2px;
+    border-radius: 10px;
     height: 70px;
     width: auto;
 }

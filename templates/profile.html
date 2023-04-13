@@ -1,104 +1,136 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3 class="text-center">Профиль пользователя</h3>
-<div class="form-group">
-    <div class="info-box">
+    {% if my_profile %}
+    <h3 class="text-center">Ваш профиль</h3>
+    {% else %}
+    <h3 class="text-center">Профиль пользователя</h3>
+    {% endif %}
+    <div class="form-group">
+        <div class="shadow info-box bg-light">
+            <div class="row">
+                <div class="col">
+                    <p class="fs-3 fw-bold text-center">
+                        {{ user.first_name }} {{ user.second_name }}
+                    </p>
+                </div>
+                <div class="col">
+                    <p class="fs-3 text-center" style="color: #630086">
+                        {{ user.user_type }} #{{ user.id }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
         <div class="row">
             <div class="col">
-                <p class="fs-3 fw-bold text-center">
-                    {{ user.first_name }} {{ user.second_name }}
-                </p>
+                <div class="shadow info-box bg-light">
+                    <div class="row">
+                        {% if user.user_type == "student" %}
+                            <div class="col">
+                                <p class="fs-5 muted text-center">Всего решено</p>
+                            </div>
+                            <div class="col">
+                                <p class="fs-5 text-center fw-bold" style="color: #630086">
+                                    {{ n_of_works }}
+                                </p>
+                            </div>
+                        {% elif user.user_type == "teacher" %}
+                            <div class="col">
+                                <p class="fs-5 muted text-center">Составлено тестов</p>
+                            </div>
+                            <div class="col">
+                                <p class="fs-5 text-center fw-bold" style="color: #630086">
+                                    {{ len_created_works }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
             <div class="col">
-                <p class="fs-3 text-center" style="color: #630086">
-                    {{ user.user_type }}#{{ user.id }}
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="form-group">
-    <div class="row">
-        <div class="col">
-            <div class="info-box">
-                <div class="row">
-                    <div class="col">
-                        <p class="fs-4 muted text-center">Всего решено</p>
-                    </div>
-                    <div class="col">
-                        <p class="fs-4 text-center fw-bold" style="color: #630086">
-                            {{ n_of_works }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="info-box">
-                <div class="row">
-                    <div class="col">
-                        <p class="fs-4 muted text-center">Средний балл</p>
-                    </div>
-                    <div class="col">
-                        <p class="fs-4 text-center fw-bold" style="color: #630086">
-                            {{ avg_mark }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="form-group">
-    <div class="row">
-        <div class="col">
-            <div class="d-grid gap-2">
-                <a class="btn btn-secondary fs-6 rounded-pill" data-bs-toggle="collapse" href="#groupsCollapse"
-                   role="button"
-                   aria-expanded="false" aria-controls="groupsCollapse">Группы</a>
-            </div>
-            <div class="collapse form-group" id="groupsCollapse">
-                <div class="card card-body">
-                    <div class="list-group">
-                        {% if groups %}
-                            {% for group in groups %}
-                                <a class="list-group-item list-group-item-action fw-bold"
-                                   href="/chat?chat_id={{ group.id }}">
-                                    {{ group.name }}
-                                </a>
-                            {% endfor %}
-                        {% else %}
-                            <a class="list-group-item list-group-item-action disabled">Вы не вступили ни в одну группу</a>
-                        {% endif %}ч
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="d-grid gap-2">
-                <a class="btn btn-success fs-6 rounded-pill" href="#worksCollapse" data-bs-toggle="collapse"
-                   aria-expanded="false" aria-controls="worksCollapse">
-                    Текущие работы<span class="badge rounded-pill text-bg-danger">{{ len_works }}</span>
-                </a>
-            </div>
-            <div class="collapse form-group" id="worksCollapse">
-                <div class="card card-body">
-                    <div class="list-group">
-                        {% if works %}
-                            {% for work in works %}
-                                <a class="list-group-item list-group-item-action fw-bold"
-                                   href="/works/{{ work.id }}">
-                                    {{ work.name }}
-                                </a>
-                            {% endfor %}
-                        {% else %}
-                            <a class="list-group-item list-group-item-action disabled">Нет работ</a>
+                <div class="shadow info-box bg-light">
+                    <div class="row">
+                        {% if user.user_type == "student" %}
+                            <div class="col">
+                                <p class="fs-5 muted text-center">Средний балл</p>
+                            </div>
+                            <div class="col">
+                                <p class="fs-5 text-center fw-bold" style="color: #630086">
+                                    {{ avg_mark }}
+                                </p>
+                            </div>
+                        {% elif user.user_type == "teacher" %}
+                            <div class="col">
+                                <p class="fs-5 muted text-center">Количество групп</p>
+                            </div>
+                            <div class="col">
+                                <p class="fs-5 text-center fw-bold" style="color: #630086">
+                                    {{ len_groups }}
+                                </p>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col">
+                <div class="d-grid gap-2">
+                    <a class="btn btn-secondary fs-6 rounded-pill" data-bs-toggle="collapse" href="#groupsCollapse"
+                       role="button"
+                       aria-expanded="false" aria-controls="groupsCollapse">Группы</a>
+                </div>
+                <div class="collapse form-group" id="groupsCollapse">
+                    <div class="card card-body">
+                        <div class="list-group">
+                            {% if groups %}
+                                {% for group in groups %}
+                                    <a class="list-group-item list-group-item-action fw-bold"
+                                       href="/chat?chat_id={{ group.id }}">
+                                        {{ group.name }}
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <a class="list-group-item list-group-item-action disabled">Вы не вступили ни в одну
+                                    группу</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% if my_profile %}
+            <div class="col">
+                <div class="d-grid gap-2">
+                    <a class="btn btn-success fs-6 rounded-pill" href="#worksCollapse" data-bs-toggle="collapse"
+                       aria-expanded="false" aria-controls="worksCollapse">
+                        Текущие работы
+                        {% if len_works %}
+                            <span class="badge text-bg-danger">{{ len_works }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="collapse form-group" id="worksCollapse">
+                    <div class="card card-body">
+                        <div class="list-group">
+                            {% if works %}
+                                {% for work in works %}
+                                    <a class="list-group-item list-group-item-action fw-bold"
+                                       href="/works/{{ work.id }}">
+                                        {{ work.name }}
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <a class="list-group-item list-group-item-action disabled">Нет работ</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        </div>
+    </div>
 {% endblock %}
