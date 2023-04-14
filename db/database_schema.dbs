@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="Sqlite" id="Project-21f2" database="Sqlite" >
+<project name="Sqlite" id="Project-125c" database="Sqlite" >
 	<schema name="Default" >
 		<table name="groups" spec="" >
 			<column name="id" type="INTEGER" jt="4" mandatory="y" />
+			<column name="name" type="VARCHAR" jt="12" />
 			<column name="teacher_id" type="INTEGER" jt="4" />
+			<column name="code" type="VARCHAR" jt="12" />
 			<index name="pk_groups" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -36,14 +38,30 @@
 			<index name="pk_questions" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="FK_questions works" to_schema="Default" to_table="works" >
+			<fk name="FK_questions works" to_schema="Default" to_table="works" options="" >
 				<fk_column name="work_id" pk="id" />
+			</fk>
+		</table>
+		<table name="solved_works" spec="" >
+			<column name="id" type="INTEGER" jt="4" mandatory="y" />
+			<column name="work_id" type="INTEGER" jt="4" />
+			<column name="user_id" type="INTEGER" jt="4" />
+			<column name="mark" type="INTEGER" jt="4" />
+			<index name="pk_solved_works" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="FK_solved_works works" to_schema="Default" to_table="works" options="" >
+				<fk_column name="work_id" pk="id" />
+			</fk>
+			<fk name="FK_solved_works users" to_schema="Default" to_table="users" options="" >
+				<fk_column name="user_id" pk="id" />
 			</fk>
 		</table>
 		<table name="users" spec="" >
 			<column name="id" type="INTEGER" jt="4" mandatory="y" />
 			<column name="password" type="VARCHAR" jt="12" />
 			<column name="email" type="VARCHAR" jt="12" />
+			<column name="remember" type="BOOLEAN" jt="-7" />
 			<column name="first_name" type="VARCHAR" jt="12" />
 			<column name="second_name" type="VARCHAR" jt="12" />
 			<column name="profile_photo" type="BLOB" jt="2004" />
@@ -65,35 +83,37 @@
 		<table name="works" spec="" >
 			<column name="id" type="INTEGER" jt="4" mandatory="y" />
 			<column name="creator_id" type="INTEGER" jt="4" />
-			<column name="name" type="VARCHAR" jt="12" />
+			<column name="name" type="VARCHAR" jt="12" mandatory="y" />
+			<column name="deadline" type="DATETIME" jt="93" mandatory="y" />
 			<index name="pk_works" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="FK_works users" to_schema="Default" to_table="users" >
+			<fk name="FK_works users" to_schema="Default" to_table="users" options="" >
 				<fk_column name="creator_id" pk="id" />
 			</fk>
 		</table>
 		<table name="works_to_groups" spec="" >
 			<column name="group" type="INTEGER" jt="4" />
 			<column name="work" type="INTEGER" jt="4" />
-			<fk name="FK_works_to_groups groups" to_schema="Default" to_table="groups" >
+			<fk name="FK_works_to_groups groups" to_schema="Default" to_table="groups" options="" >
 				<fk_column name="group" pk="id" />
 			</fk>
-			<fk name="FK_works_to_groups works" to_schema="Default" to_table="works" >
+			<fk name="FK_works_to_groups works" to_schema="Default" to_table="works" options="" >
 				<fk_column name="work" pk="id" />
 			</fk>
 		</table>
 	</schema>
-	<connector name="Sqlite" database="Sqlite" driver_class="org.sqlite.JDBC" driver_jar="sqlite-jdbc-3.40.0.0.jar" driver_desc="Standard" host="localhost" port="7210" instance="C:/Users/CUBER/spermum_edu/spermum_education/db/spermum.db" useSystemProxy="false" />
-	<layout name="Main Layout" id="Layout-c53" show_relation="columns" >
-		<entity schema="Default" name="groups" color="BED3F4" x="48" y="304" />
-		<entity schema="Default" name="messages" color="BED3F4" x="48" y="480" />
-		<entity schema="Default" name="questions" color="3986C1" x="496" y="80" />
-		<entity schema="Default" name="users" color="BED3F4" x="352" y="464" />
-		<entity schema="Default" name="users_to_groups" color="BED3F4" x="448" y="304" />
-		<entity schema="Default" name="works" color="3986C1" x="736" y="80" />
-		<entity schema="Default" name="works_to_groups" color="3986C1" x="928" y="80" />
-		<callout x="48" y="160" pointer="Round" >
+	<connector name="Sqlite" database="Sqlite" driver_class="org.sqlite.JDBC" driver_jar="sqlite-jdbc-3.40.0.0.jar" driver_desc="Standard" host="localhost" port="7210" instance="C:/Users/CUBER/Desktop/nirt/spermum_education/db/spermum.db" useSystemProxy="false" />
+	<layout name="Main Layout" id="Layout-252c" show_relation="columns" >
+		<entity schema="Default" name="groups" color="BED3F4" x="480" y="592" />
+		<entity schema="Default" name="messages" color="BED3F4" x="256" y="592" />
+		<entity schema="Default" name="questions" color="BED3F4" x="256" y="80" />
+		<entity schema="Default" name="solved_works" color="BED3F4" x="672" y="528" />
+		<entity schema="Default" name="users" color="BED3F4" x="256" y="320" />
+		<entity schema="Default" name="users_to_groups" color="BED3F4" x="48" y="592" />
+		<entity schema="Default" name="works" color="BED3F4" x="480" y="320" />
+		<entity schema="Default" name="works_to_groups" color="BED3F4" x="672" y="320" />
+		<callout x="80" y="144" pointer="Round" >
 			<comment><![CDATA[This is a layout. 
 - Double-click table headers, columns, or foreign keys to edit 
 - Drag tables to the layout from the structure tree, or 
@@ -101,44 +121,55 @@
 - Create multiple layouts with the same or different tables 
 - Right-click the layout to create new tables]]></comment>
 		</callout>
-		<group name="groups" color="ECF0F7" >
+		<group name="users" color="ECF0F7" >
+			<entity schema="Default" name="users" />
+			<entity schema="Default" name="works" />
 			<entity schema="Default" name="groups" />
+			<entity schema="Default" name="works_to_groups" />
+			<entity schema="Default" name="solved_works" />
 			<entity schema="Default" name="messages" />
 			<entity schema="Default" name="users_to_groups" />
-			<entity schema="Default" name="users" />
+			<entity schema="Default" name="questions" />
 		</group>
 	</layout>
-	<layout name="~Layout with Sample Tools" id="Layout-20c" show_column_type="y" show_relation="columns" >
-		<entity schema="Default" name="groups" color="BED3F4" x="48" y="48" />
-		<entity schema="Default" name="messages" color="BED3F4" x="48" y="224" />
-		<entity schema="Default" name="users" color="BED3F4" x="288" y="48" />
-		<entity schema="Default" name="users_to_groups" color="BED3F4" x="544" y="48" />
-		<script name="SQL Editor" id="Editor-763" language="SQL" >
+	<layout name="~Layout with Sample Tools" id="Layout-848" show_column_type="y" show_relation="columns" >
+		<entity schema="Default" name="groups" color="BED3F4" x="544" y="560" />
+		<entity schema="Default" name="messages" color="BED3F4" x="272" y="560" />
+		<entity schema="Default" name="questions" color="BED3F4" x="256" y="48" />
+		<entity schema="Default" name="solved_works" color="BED3F4" x="800" y="496" />
+		<entity schema="Default" name="users" color="BED3F4" x="272" y="288" />
+		<entity schema="Default" name="users_to_groups" color="BED3F4" x="48" y="560" />
+		<entity schema="Default" name="works" color="BED3F4" x="544" y="288" />
+		<entity schema="Default" name="works_to_groups" color="BED3F4" x="800" y="288" />
+		<script name="SQL Editor" id="Editor-7ac" language="SQL" >
 			<string><![CDATA[SELECT
-	id, teacher_id
+	id, password, email, remember, first_name, second_name, profile_photo, user_type
 FROM
-	groups s;]]></string>
+	users s;]]></string>
 		</script>
-		<browser id="Browse-235f" name="Relational Data Explorer" confirm_updates="y" >
-			<browse_table schema="Default" entity="groups" x="20" y="20" width="400" height="300" >
-				<browse_table schema="Default" entity="users" fk="FK_groups users" x="440" y="20" width="500" height="350" record_view="y" >
-					<browse_table schema="Default" entity="messages" fk="FK_messages users" x="960" y="20" width="500" height="350" />
+		<browser id="Browse-1664" name="Relational Data Explorer" confirm_updates="y" >
+			<browse_table schema="Default" entity="users" x="20" y="20" width="400" height="300" >
+				<browse_table schema="Default" entity="groups" fk="FK_groups users" x="440" y="20" width="500" height="350" >
+					<browse_table schema="Default" entity="messages" fk="FK_messages groups" x="960" y="20" width="500" height="350" />
 				</browse_table>
 			</browse_table>
 		</browser>
-		<query id="Query-76e" name="Query Builder" >
-			<query_table schema="Default" name="groups" alias="g" x="48" y="48" >
+		<query id="Query-1c62" name="Query Builder" >
+			<query_table schema="Default" name="users" alias="u" x="48" y="48" >
 				<column name="id" />
-				<column name="teacher_id" />
-				<query_table schema="Default" name="users" alias="u" x="240" y="48" fk="FK_groups users" type="Inner Join" >
+				<column name="password" />
+				<column name="email" />
+				<column name="remember" />
+				<column name="first_name" />
+				<column name="second_name" />
+				<column name="profile_photo" />
+				<column name="user_type" />
+				<query_table schema="Default" name="groups" alias="g" x="272" y="48" fk="FK_groups users" type="Inner Join" >
 					<column name="id" />
-					<column name="password" />
-					<column name="email" />
-					<column name="first_name" />
-					<column name="second_name" />
-					<column name="profile_photo" />
-					<column name="user_type" />
-					<query_table schema="Default" name="messages" alias="m" x="448" y="48" fk="FK_messages users" type="Inner Join" >
+					<column name="name" />
+					<column name="teacher_id" />
+					<column name="code" />
+					<query_table schema="Default" name="messages" alias="m" x="464" y="48" fk="FK_messages groups" type="Inner Join" >
 						<column name="id" />
 						<column name="sender_id" />
 						<column name="group_id" />
@@ -147,43 +178,64 @@ FROM
 				</query_table>
 			</query_table>
 		</query>
-		<form name="Report" id="Report-1d00" template="Page" css="container-fluid" view="frame" >
+		<form name="Report" id="Report-1879" template="Page" css="container-fluid" view="frame" >
 			<var name="samplePageNumber" type="4" value="0" mandatory="n" />
 			<var name="sampleRecordsPerPage" type="4" value="100" mandatory="n" />
 			<body name="Body" template="Grid" pos="0,0,0,0,f,f" layout="{{-2,-2,-2,-2,-1},{-2,-2,-2,-2}}" scroll="n" html="n" >
-				<cell type="label" name="Groups Data" template="H3" pos="0,0,1,0,l,c" />
+				<cell type="label" name="Users Data" template="H3" pos="0,0,1,0,l,c" />
 				<cell type="chart" name="Pie" template="Pie" pos="0,1,4,1,l,c" max_records="20" >
 					<form_script type="DataSource" language="SQL" >
 						<var name="id" type="4" />
-						<var name="teacher_id" type="4" />
-						<script ><![CDATA[SELECT * FROM groups]]></script>
+						<var name="password" />
+						<var name="email" />
+						<var name="remember" type="-7" />
+						<var name="first_name" />
+						<var name="second_name" />
+						<var name="profile_photo" type="2004" />
+						<var name="user_type" />
+						<script ><![CDATA[SELECT * FROM users]]></script>
 					</form_script>
+					<param name="i0" value="password" />
 					<param name="width" value="100%" />
 					<param name="v0" value="id" />
 					<param name="title" value="Sample Chart" />
 					<param name="height" value="400px" />
 				</cell>
-				<tableview name="sample" template="Table" css="table table-striped table-sm table-hover" pos="0,2,4,2,f,f" layout="{{-2,-2,-2},{-2,-2}}" scroll="n" html="n" header_rows="1" >
+				<tableview name="sample" template="Table" css="table table-striped table-sm table-hover" pos="0,2,4,2,f,f" layout="{{-2,-2,-2,-2,-2,-2,-2},{-2,-2}}" scroll="n" html="n" header_rows="1" >
 					<form_script type="DataSource" language="SQL" >
 						<var name="id" type="4" />
-						<var name="teacher_id" type="4" />
-						<script ><![CDATA[SELECT * FROM groups]]></script>
+						<var name="password" />
+						<var name="email" />
+						<var name="remember" type="-7" />
+						<var name="first_name" />
+						<var name="second_name" />
+						<var name="profile_photo" type="2004" />
+						<var name="user_type" />
+						<script ><![CDATA[SELECT * FROM users]]></script>
 					</form_script>
 					<cell type="label" name="id" pos="0,0,0,0,c,c" />
-					<cell type="label" name="teacher_id" pos="1,0,1,0,c,c" />
-					<cell type="label" name="Button can open other pages." pos="2,0,2,0,c,c" />
+					<cell type="label" name="password" pos="1,0,1,0,c,c" />
+					<cell type="label" name="email" pos="2,0,2,0,c,c" />
+					<cell type="label" name="remember" pos="3,0,3,0,c,c" />
+					<cell type="label" name="first_name" pos="4,0,4,0,c,c" />
+					<cell type="label" name="second_name" pos="5,0,5,0,c,c" />
+					<cell type="label" name="Button can open other pages." pos="6,0,6,0,c,c" />
 					<cell type="label" name="${id}" template="Plain" pos="0,1,0,1,l,c" />
-					<cell type="label" name="${teacher_id}" template="Plain" pos="1,1,1,1,l,c" />
-					<cell type="button" name="More" template="Plain" css="btn btn-sm btn-secondary" pos="2,1,2,1,c,c" ref_id="Report-1d00" />
+					<cell type="label" name="${password}" template="Plain" pos="1,1,1,1,l,c" />
+					<cell type="label" name="${email}" template="Plain" pos="2,1,2,1,l,c" />
+					<cell type="label" name="${remember}" template="Plain" pos="3,1,3,1,l,c" />
+					<cell type="label" name="${first_name}" template="Plain" pos="4,1,4,1,l,c" />
+					<cell type="label" name="${second_name}" template="Plain" pos="5,1,5,1,l,c" />
+					<cell type="button" name="More" template="Plain" css="btn btn-sm btn-secondary" pos="6,1,6,1,c,c" ref_id="Report-1879" />
 				</tableview>
-				<cell type="href" name="" disabled="${samplePageNumber&lt;1}" pos="0,3,0,3,l,c" glyph="bi-chevron_double_left" ref_id="Report-1d00" >
+				<cell type="href" name="" disabled="${samplePageNumber&lt;1}" pos="0,3,0,3,l,c" glyph="bi-chevron_double_left" ref_id="Report-1879" >
 					<var name="samplePageNumber" value="0" />
 				</cell>
-				<cell type="href" name="" disabled="${samplePageNumber&lt;1}" pos="1,3,1,3,l,c" glyph="bi-chevron_left" ref_id="Report-1d00" >
+				<cell type="href" name="" disabled="${samplePageNumber&lt;1}" pos="1,3,1,3,l,c" glyph="bi-chevron_left" ref_id="Report-1879" >
 					<var name="samplePageNumber" value="${Math.max(0,samplePageNumber-1)}" />
 				</cell>
 				<cell type="label" name="Page ${samplePageNumber+1}" pos="2,3,2,3,l,c" />
-				<cell type="href" name="" disabled="${!sampleHasNextPage}" pos="3,3,3,3,l,c" glyph="bi-chevron_right" ref_id="Report-1d00" >
+				<cell type="href" name="" disabled="${!sampleHasNextPage}" pos="3,3,3,3,l,c" glyph="bi-chevron_right" ref_id="Report-1879" >
 					<var name="samplePageNumber" value="${( samplePageNumber+1 )}" />
 				</cell>
 			</body>

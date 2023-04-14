@@ -46,12 +46,35 @@
         <div class="row">
             {% if chosen_group %}
             <div class="col"><h2 class="text-by-left nowrap">{{ chosen_group.name }}</h2>
-            </div>
+            </div>  
             {% else %}
             <div class="col"><h2 class="text-by-left nowrap">Выберите группу</h2>
             </div>
             {% endif %}
             <div class="col" align="right">
+                <button class="btn btn-success" type="button" data-bs-toggle="modal"
+                        data-bs-target="#InviteModal">
+                    Добавить ученика
+                </button>
+                <div class="modal fade" id="InviteModal" tabindex="-1" aria-labelledby="InviteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="InviteModalLabel">Добавить ученика</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="input-group mb-3">
+                            {{ form_invite.email(class="form-control", placeholder="Электронный адресс ученика") }}
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary">Код группы</button>
+                            {{ form_invite.submit(class="btn btn-success") }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 {% if groups %}
                 <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasGroup" aria-controls="offcanvasGroup">
@@ -111,86 +134,6 @@
     </form>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
-    <script>
-            $(document).ready(() => {
-                $('#form_send_message').on('submit', (e) => {
-                    e.preventDefault();
-                });
-
-
-                const socket = io.connect('https://a587-83-171-69-39.ngrok-free.app/');
-
-                var getUrl = () => {
-                    return window.location.href;
-                }
-
-                var getUrlParams = (key) => {
-                    url = getUrl();
-                    first_step = url.split('?');
-                    second_step = new Array(first_step[1]);
-                    let params = new Object();
-                    for (let i = 0; i < second_step.length; i++) {
-                        let key_and_value = second_step[i].split('=');
-                        params[key_and_value[0]] = key_and_value[1];
-                    }
-                    return params[key];
-                };
-
-                socket.on('connect', function() {
-                    socket.emit('join_group',
-                    {
-                        'group': Number(getUrlParams('chat_id'))
-                    });
-                });
-
-
-                socket.on('disconnect', function() {
-                    socket.emit('leave_group',
-                    {
-                        'group': Number(getUrlParams('chat_id'))
-                    });
-                });
-
-
-                $('#send_message_button').on('click', function () {
-                    socket.emit('send_message_json',
-                        {
-                            'message_text': $('#message_text').val(),
-                            'group_id': Number(getUrlParams('chat_id'))
-                        });
-                    $('#message_text').val('');
-                });
-
-                socket.on('updateMessage', function (data) {
-                    let message_block = document.getElementById('message_block');
-                    let message = `
-                            <div class="card card-wrapper" style="border: none;">
-                                <div class="card-body user-card">
-                                    <div>
-                                        <div>
-                                            <div
-                                                class="float-start small-picture"
-                                                style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})" alt=""></div>
-                                        </div>
-                                        <div>
-                                            <h4 class="user-name-card">${data['sender_name']}</h4>
-                                        </div>
-                                        <div>
-                                            <h6 class="message-card">${data['message']}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                    `
-                    message_block.innerHTML += message;
-                    message_block.scrollTop = message_block.scrollHeight;
-                });
-
-                socket.on('message', function (data) {
-                    socket.emit({'message_text': 'text'});
-                });
-
-            });
-    </script>
+    <script src="../static/scripts/chat.js"></script>
 </div>
 {% endblock %}

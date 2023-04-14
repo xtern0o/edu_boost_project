@@ -17,6 +17,7 @@ from data.solved_works import SolvedWorks
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.chat_form import ChatForm
+from forms.invite_student import InviteForm
 
 
 app = Flask(__name__)
@@ -24,6 +25,12 @@ app.config["SECRET_KEY"] = "maxkarnlol"
 socketio = SocketIO(app, cors_allowed_origins='*')
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def chose_socket_host():
+    tunnel = input('input L/N (Local/Ngrok):')
+    with open('./static/', 'w') as js_file:
+        pass
 
 
 @login_manager.user_loader
@@ -42,7 +49,10 @@ def handle_connect(data):
     msg_object.group_id = data.get('group_id')
     db_sess.add(msg_object)
     db_sess.commit()
-    emit('updateMessage', {'message': message, 'sender_name': f'{current_user.first_name} {current_user.second_name}'}, to=data.get('group_id'))
+    json = {'message': message,
+            'sender_name': f'{current_user.first_name} {current_user.second_name}',
+            'pic_url': url_for('static', filename='img/erdogan.jpg'),}
+    emit('updateMessage', json, to=data.get('group_id'))
 
 
 @socketio.on('join_group')
@@ -157,6 +167,7 @@ def profile_userid(user_id):
 @login_required
 def chat():
     form = ChatForm()
+    invite_form = InviteForm()
     db_sess = db_session.create_session()
     user = db_sess.query(Users).filter(Users.id == current_user.id).first()
     page = request.args.get('chat_id', default=None, type=int)
@@ -177,7 +188,7 @@ def chat():
         'chosen_group': curr_page,
         'messages': messages
     }
-    return render_template('chat.html', form=form, **data)
+    return render_template('chat.html', form_invite=invite_form, form=form, **data)
 
 
 @app.route("/logout")

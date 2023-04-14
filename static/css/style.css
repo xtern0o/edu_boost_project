@@ -39,10 +39,14 @@ table {
     font-family: "Arial", sans-serif;
     font-size: 20px;
 }
+.navbar-container {
+    padding: 10px;
+
+}
 .classic-container {
     padding: 10px;
     margin: 20px auto;
-    width: 800px;
+    max-width: 1000px;
     border-radius: 10px;
 }
 .form-group {
