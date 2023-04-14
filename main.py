@@ -5,6 +5,8 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 
 import datetime as dt
 from statistics import mean
+from random import choices
+from string import ascii_letters, digits
 
 from data import db_session
 from data.users import Users
@@ -17,10 +19,11 @@ from data.solved_works import SolvedWorks
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.chat_form import ChatForm
+from forms.group_creating_form import GroupCreatingForm
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "maxkarnlol"
+app.config["SECRET_KEY"] = "maxkarnandjenyalol"
 socketio = SocketIO(app, cors_allowed_origins='*')
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -153,14 +156,13 @@ def profile_userid(user_id):
     abort(404)
 
 
-@app.route('/chat', methods=['POST', 'GET'])
+@app.route('/group', methods=['POST', 'GET'])
 @login_required
 def chat():
     form = ChatForm()
     db_sess = db_session.create_session()
-    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
     page = request.args.get('chat_id', default=None, type=int)
-    groups = user.groups
+    groups = current_user.groups
     if page:
         curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
         messages = db_sess.query(Messages).filter(Messages.group_id == page)
@@ -178,6 +180,39 @@ def chat():
         'messages': messages
     }
     return render_template('chat.html', form=form, **data)
+
+
+@app.route('/group/creating')
+@login_required
+def groups_creating():
+    form = GroupCreatingForm()
+    db_sess = db_session.create_session()
+    params = {
+        "title": "Создание группы",
+        "form": form
+    }
+    if current_user.user_type == "student":
+        # TODO: Make 403 error response
+        abort(405)
+    if form.validate_on_submit():
+        name = form.name.data
+        invite_code = ''.join(choices(ascii_letters + digits, k=16)) if form.enter_code.data else form.code.data
+        while db_sess.query(Groups).filter(Groups.code == invite_code).first():
+            invite_code = ''.join(choices(ascii_letters + digits, k=16)) if form.enter_code.data else form.code.data
+        new_group = Groups(
+            name=name,
+            teacher=current_user,
+            code=invite_code
+        )
+        db_sess.add(new_group)
+        db_sess.commit()
+        params["success"] = True
+        params["new_group_name"] = name
+        return render_template("groups_creating.html", **params)
+
+    params["title"] = "Создание группы"
+    params["success"] = False
+    return render_template("groups_creating.html", **params)
 
 
 @app.route("/logout")
