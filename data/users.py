@@ -15,6 +15,15 @@ users_to_groups_table = sqlalchemy.Table(
 )
 
 
+users_to_invites_to_groups_table = sqlalchemy.Table(
+    'users_to_invites_to_groups',
+    SqlAlchemyBase.metadata,
+    sqlalchemy.Column('user', sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id')),
+    sqlalchemy.Column('group', sqlalchemy.Integer, sqlalchemy.ForeignKey('groups.id'))
+
+)
+
+
 class Users(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
 
@@ -34,6 +43,7 @@ class Users(SqlAlchemyBase, UserMixin):
     sender = orm.relationship('Messages', back_populates='sender')
     creator = orm.relationship('Works', back_populates='creator')
     solved_work = orm.relationship('SolvedWorks', back_populates='solved_user')
+    invites_group = orm.relationship('Groups', secondary='users_to_invites_to_groups', backref='invites')
 
     # функции
     def set_password(self, password):

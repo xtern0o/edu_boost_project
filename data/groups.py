@@ -17,3 +17,4 @@ class Groups(SqlAlchemyBase):
     message = orm.relationship('Messages', back_populates='group')
     teacher = orm.relationship('Users')
     works = orm.relationship("Works", secondary="works_to_groups", backref='works')
+    invites_students = orm.relationship('Groups', secondary='users_to_invites_to_groups', backref='users_invites')

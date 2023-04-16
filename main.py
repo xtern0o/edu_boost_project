@@ -14,9 +14,9 @@ from data.questions import Questions
 from data.works import Works
 from data.solved_works import SolvedWorks
 
+
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
-from forms.chat_form import ChatForm
 from forms.invite_student import InviteForm
 
 
@@ -55,11 +55,35 @@ def handle_connect(data):
     emit('updateMessage', json, to=data.get('group_id'))
 
 
+@socketio.on('accept_invite')
+def accept_handle(data):
+    group_id = data.get('group_id')
+    db_sess = db_session.create_session()
+    group = db_sess.query(Groups).filter(Groups.id == group_id).first()
+    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+    user.invites_group.remove(group)
+    user.groups.append(group)
+    db_sess.commit()
+    print('accept done')
+
+
+@socketio.on('cancel_invite')
+def cancel_handle(data):
+    group_id = data.get('group_id')
+    db_sess = db_session.create_session()
+    group = db_sess.query(Groups).filter(Groups.id == group_id).first()
+    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+    user.invites_group.remove(group)
+    db_sess.commit()
+    print('cancel_done')
+
+
 @socketio.on('join_group')
 def on_join(data):
     group = data.get('group')
-    join_room(group)
-    print(request.sid)
+    if group:
+        join_room(group)
+        print(request.sid)
     print('user connected')
 
 
@@ -166,17 +190,22 @@ def profile_userid(user_id):
 @app.route('/chat', methods=['POST', 'GET'])
 @login_required
 def chat():
-    form = ChatForm()
-    invite_form = InviteForm()
+    form = InviteForm()
     db_sess = db_session.create_session()
-    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
     page = request.args.get('chat_id', default=None, type=int)
+    if form.validate_on_submit():
+        student_email = request.form.get('email')
+        user = db_sess.query(Users).filter(Users.email == student_email).first()
+        group = db_sess.query(Groups).filter(Groups.id == page).first()
+        user.invites_group.append(group)
+        db_sess.commit()
+    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
     groups = user.groups
+    invites = user.invites_group
     if page:
         curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
         messages = db_sess.query(Messages).filter(Messages.group_id == page)
         curr_group = db_sess.query(Groups).filter(Groups.id == page).first()
-        print(groups, curr_group)
         if curr_group not in groups:
             abort(405)
     else:
@@ -186,9 +215,10 @@ def chat():
         'title': 'Чат',
         'groups': groups,
         'chosen_group': curr_page,
-        'messages': messages
+        'messages': messages,
+        'invites': invites
     }
-    return render_template('chat.html', form_invite=invite_form, form=form, **data)
+    return render_template('chat.html', form=form, **data)
 
 
 @app.route("/logout")

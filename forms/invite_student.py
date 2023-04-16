@@ -4,5 +4,5 @@ from wtforms.validators import DataRequired
 
 
 class InviteForm(FlaskForm):
-    email = EmailField(validators=[DataRequired()])
+    email = EmailField()
     submit = SubmitField('Отправить приглашение')

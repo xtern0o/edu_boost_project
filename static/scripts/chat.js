@@ -3,7 +3,6 @@ $(document).ready(() => {
         e.preventDefault();
     });
 
-
     const socket = io.connect('127.0.0.1:5000');
     message_block.scrollTop = message_block.scrollHeight;
 
@@ -24,6 +23,7 @@ $(document).ready(() => {
     };
 
     socket.on('connect', function() {
+        let chat_id = 
         socket.emit('join_group',
         {
             'group': Number(getUrlParams('chat_id'))
@@ -47,6 +47,12 @@ $(document).ready(() => {
             });
         $('#message_text').val('');
     });
+
+    function JoinToGroup(id) {
+        socket.emit('accept_invite', {
+            'group_id': id
+        });
+    };
 
     socket.on('updateMessage', function (data) {
         let message_block = document.getElementById('message_block');
