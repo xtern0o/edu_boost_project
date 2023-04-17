@@ -19,7 +19,7 @@ from data.solved_works import SolvedWorks
 
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
-from forms.invite_student import InviteForm
+from forms.invite_student import InviteForm, JoinGroupForm
 from forms.group_creating_form import GroupCreatingForm
 
 
@@ -193,14 +193,23 @@ def profile_userid(user_id):
 @login_required
 def chat():
     form = InviteForm()
+    form_accept = JoinGroupForm()
     db_sess = db_session.create_session()
     page = request.args.get('chat_id', default=None, type=int)
+    if form_accept.validate_on_submit():
+        code = request.form.get('code', None)
+        group = db_sess.query(Groups).filter(Groups.code == code).first()
+        if group:
+            user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+            group.students.append(user)
+            db_sess.commit()
     if form.validate_on_submit():
-        student_email = request.form.get('email')
+        student_email = request.form.get('email', None)
         user = db_sess.query(Users).filter(Users.email == student_email).first()
-        group = db_sess.query(Groups).filter(Groups.id == page).first()
-        user.invites_group.append(group)
-        db_sess.commit()
+        if user:
+            group = db_sess.query(Groups).filter(Groups.id == page).first()
+            user.invites_group.append(group)
+            db_sess.commit()
     user = db_sess.query(Users).filter(Users.id == current_user.id).first()
     if user.user_type == 'student':
         groups = user.groups
@@ -212,7 +221,7 @@ def chat():
         curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
         messages = db_sess.query(Messages).filter(Messages.group_id == page)
         curr_group = db_sess.query(Groups).filter(Groups.id == page).first()
-        print(groups)
+        print(groups, curr_group)
         if curr_group not in groups:
             abort(405)
     else:
@@ -223,9 +232,9 @@ def chat():
         'groups': groups,
         'chosen_group': curr_page,
         'messages': messages,
-        'invites': invites
+        'invites': invites,
     }
-    return render_template('chat.html', form=form, **data)
+    return render_template('chat.html', form_accept=form_accept, form=form, **data)
 
 
 @app.route('/group/creating', methods=["GET", "POST"])
