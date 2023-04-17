@@ -2,41 +2,41 @@
 
 
 {% block header_group_navbar %}
-<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasGroup"
-     aria-labelledby="offcanvasGroupLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasGroupLabel">Группы</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
-                aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <div class="">
-            <div class="classic-containter navbar-group">
-                <div class="list-group list-group-flush">
-                    {% for group in groups %}
-                    <a class="list-group-item list-group-item-action"
-                       href="/chat?chat_id={{ group.id }}">
-                       <div
-                       class="float-start small-picture"
-                       style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})"
-                       alt=""></div>
-                        <div>
-                            <p>
-                                {{ group.name }}
-                            </p>
-                            <p>
-                                Учитель: {{ group.teacher.first_name + ' ' +
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasGroup"
+         aria-labelledby="offcanvasGroupLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasGroupLabel">Группы</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="">
+                <div class="classic-containter navbar-group">
+                    <div class="list-group list-group-flush">
+                        {% for group in groups %}
+                            <a class="list-group-item list-group-item-action"
+                               href="/chat?chat_id={{ group.id }}">
+                                <div
+                                        class="float-start small-picture"
+                                        style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})"
+                                        alt=""></div>
+                                <div>
+                                    <p>
+                                        {{ group.name }}
+                                    </p>
+                                    <p>
+                                        Учитель: {{ group.teacher.first_name + ' ' +
                                 group.teacher.second_name }}
-                            </p>
-                        </div>
-                    </a>
-                    {% endfor %}
+                                    </p>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
 {% endblock %}
 
 
@@ -148,88 +148,94 @@
         </div>
     </div>
     <div class="message-block" id="message_block">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="card card-wrapper" style="border: none;">
-            <div class="card-body user-card">
-                <div>
-                    <div>
-                        <div
-                                class="float-start small-picture"
-                                style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})"
-                                alt=""></div>
-                    </div>
-                    <div>
-                        <h4 class="user-name-card">{{ message.sender.first_name + ' ' +
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="card card-wrapper" style="border: none;">
+                        <div class="card-body user-card">
+                            <div>
+                                <div>
+                                    <div
+                                            class="float-start small-picture"
+                                            style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})"
+                                            alt=""></div>
+                                </div>
+                                <div>
+                                    <h4 class="user-name-card">{{ message.sender.first_name + ' ' +
                             message.sender.second_name }}</h4>
+                                </div>
+                                <div>
+                                    <h6 class="message-card">{{ message.text }}</h6>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h6 class="message-card"><p>{{ message.text }}</p></h6>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% endif %}
+                {% endfor %}
+            {% endif %}
 
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" id="message_text" class="form-control" placeholder="Введите сообщение"
+                   aria_describedby="send_message_button" aria_label="Recipient's username">
+            {% if chosen_group %}
+                <button class="btn btn-outline-secondary" type="submit" id="send_message_button">
+                    <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt="">
+                </button>
+            {% else %}
+                <button class="btn btn-outline-secondary" type="submit" id="" disabled>
+                    <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt="">
+                </button>
+            {% endif %}
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
     </div>
-    <div class="input-group mb-3">
-        <input type="text" id="message_text" class="form-control" placeholder="Введите сообщение" aria_describedby="send_message_button" aria_label="Recipient's username">
-        {% if chosen_group %}
-        <button class="btn btn-outline-secondary" type="submit" id="send_message_button">
-            <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt="">
-        </button>
-        {% else %}
-        <button class="btn btn-outline-secondary" type="submit" id="" disabled>
-            <img src="{{ url_for('static', filename='img/send_message_icon.png') }}" alt="">
-        </button>
-        {% endif %}
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
-</div>
 {% endblock %}
 
 
 {% block invites_to_group %}
     {% if invites %}
         <button class="btn btn-success" type="button" data-bs-toggle="modal"
-        data-bs-target="#NotificationModal" style="margin-right: 10px;"> Приглашения в группы
+                data-bs-target="#NotificationModal" style="margin-right: 10px;"> Приглашения в группы
         </button>
-        <div class="modal fade" id="NotificationModal" tabindex="-1" aria-labelledby="NotificationModalLabel" aria-hidden="true">
+        <div class="modal fade" id="NotificationModal" tabindex="-1" aria-labelledby="NotificationModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="NotificationModalLabel">Приглашения</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="inviteModal">
-                    {% for group in invites %}
-                    <div class="card" id="inviteToGroup{{ group.id }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ group.name }}</h5>
-                            <p class="card-text">Учитель: {{ group.teacher.first_name + ' ' +
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="NotificationModalLabel">Приглашения</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="inviteModal">
+                        {% for group in invites %}
+                            <div class="card" id="inviteToGroup{{ group.id }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ group.name }}</h5>
+                                    <p class="card-text">Учитель: {{ group.teacher.first_name + ' ' +
                                 group.teacher.second_name }}</p>
-                            <div class="input-group">
-                                <button class="btn btn-outline-danger" type="button" onclick="CancelInvite({{ group.id }})">Отклонить</button>
-                                <button class="btn btn-outline-success" type="button" onclick="AcceptInvite({{ group.id }})">Вступить</button>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-danger" type="button"
+                                                onclick="CancelInvite({{ group.id }})">Отклонить
+                                        </button>
+                                        <button class="btn btn-outline-success" type="button"
+                                                onclick="AcceptInvite({{ group.id }})">Вступить
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                      </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                    </div>
                 </div>
-                <div class="modal-footer">
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
     {% endif %}
 {% endblock %}
 
 
 {% block chat_script %}
 
-<script>
+    <script>
 
         $('#form_send_message').on('submit', (e) => {
             e.preventDefault();
@@ -278,20 +284,20 @@
             deleteGroupInvite(id);
         };
 
-        socket.on('connect', function() {
-            let chat_id = 
-            socket.emit('join_group',
-            {
-                'group': Number(getUrlParams('chat_id'))
-            });
+        socket.on('connect', function () {
+            let chat_id =
+                socket.emit('join_group',
+                    {
+                        'group': Number(getUrlParams('chat_id'))
+                    });
         });
 
 
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function () {
             socket.emit('leave_group',
-            {
-                'group': Number(getUrlParams('chat_id'))
-            });
+                {
+                    'group': Number(getUrlParams('chat_id'))
+                });
         });
 
 
@@ -332,6 +338,6 @@
         socket.on('message', function (data) {
             socket.emit({'message_text': 'text'});
         });
-</script>
+    </script>
 
 {% endblock %}
