@@ -219,13 +219,14 @@ def chat():
         groups = user.groups
         invites = user.invites_group
     else:
-        groups = db_sess.query(Groups).filter(Groups.teacher == user)
+        groups = db_sess.query(Groups).filter(Groups.teacher == user).all()
+        print(groups)
+        print('123')
         invites = []
     if page:
         curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
         messages = db_sess.query(Messages).filter(Messages.group_id == page)
         curr_group = db_sess.query(Groups).filter(Groups.id == page).first()
-        print(groups, curr_group)
         if curr_group not in groups:
             abort(405)
     else:
