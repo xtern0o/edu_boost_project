@@ -95,7 +95,6 @@ def registration():
             first_name=form.first_name.data,
             second_name=form.second_name.data,
         )
-        teacher_type = request.form.get("teacher-button")
         student_type = request.form.get("student-button")
         if student_type:
             user.user_type = "student"
@@ -162,7 +161,10 @@ def chat():
     form = ChatForm()
     db_sess = db_session.create_session()
     page = request.args.get('chat_id', default=None, type=int)
-    groups = current_user.groups
+    if current_user.user_type == "student":
+        groups = current_user.groups
+    else:
+        groups = db_sess.query(Groups).filter(Groups.teacher == current_user)
     if page:
         curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
         messages = db_sess.query(Messages).filter(Messages.group_id == page)
@@ -182,11 +184,12 @@ def chat():
     return render_template('chat.html', form=form, **data)
 
 
-@app.route('/group/creating')
+@app.route('/group/creating', methods=["GET", "POST"])
 @login_required
 def groups_creating():
-    form = GroupCreatingForm()
+    print(current_user.groups)
     db_sess = db_session.create_session()
+    form = GroupCreatingForm()
     params = {
         "title": "Создание группы",
         "form": form
@@ -196,18 +199,19 @@ def groups_creating():
         abort(405)
     if form.validate_on_submit():
         name = form.name.data
-        invite_code = ''.join(choices(ascii_letters + digits, k=16)) if form.enter_code.data else form.code.data
+        invite_code = ''.join(choices(ascii_letters + digits, k=16))
         while db_sess.query(Groups).filter(Groups.code == invite_code).first():
-            invite_code = ''.join(choices(ascii_letters + digits, k=16)) if form.enter_code.data else form.code.data
+            invite_code = ''.join(choices(ascii_letters + digits, k=16))
         new_group = Groups(
             name=name,
-            teacher=current_user,
+            teacher_id=current_user.id,
             code=invite_code
         )
         db_sess.add(new_group)
         db_sess.commit()
         params["success"] = True
         params["new_group_name"] = name
+        params["new_group_code"] = invite_code
         return render_template("groups_creating.html", **params)
 
     params["title"] = "Создание группы"

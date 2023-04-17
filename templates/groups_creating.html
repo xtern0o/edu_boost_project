@@ -3,6 +3,7 @@
 {% block content %}
     <h3 class="text-center">Создание группы</h3>
     <form action="" method="post">
+    {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.name(class="form-control form-child", placeholder=form.name.label.text) }}
         </div>
@@ -13,12 +14,12 @@
             <div class="alert alert-success">
                 <div class="row">
                     <div class="col">
-                        Группа "{{ new_group_name }}" успешно создана.
+                        Группа "{{ new_group_name }}" успешно создана. Код для присоединения: {{ new_group_code }}
                     </div>
                     <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a class="btn btn-outline-success btn-sm me-md-2">
+                        <button class="btn btn-outline-success btn-sm me-md-2">
                             Скопировать пригласительный код
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

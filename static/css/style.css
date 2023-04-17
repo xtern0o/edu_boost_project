@@ -115,6 +115,10 @@ by-right-side {
 a {
     text-decoration: none;
 }
+a:hover {
+    text-decoration-line: underline;
+}
+
 
 .small-picture {
     height: 60px;
@@ -143,8 +147,7 @@ a {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover; 
-    border-radius: 50%; 
-    margin-right: 10px; 
+    border-radius: 50%;
 }
 
 .error-pic {
@@ -161,7 +164,4 @@ a {
     border-radius: 10px;
     height: 70px;
     width: auto;
-}
-.hover-link:hover {
-    text-decoration-line: underline;
 }
