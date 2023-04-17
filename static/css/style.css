@@ -39,10 +39,14 @@ table {
     font-family: "Arial", sans-serif;
     font-size: 20px;
 }
+.navbar-container {
+    padding: 10px;
+
+}
 .classic-container {
     padding: 10px;
     margin: 20px auto;
-    width: 800px;
+    max-width: 1000px;
     border-radius: 10px;
 }
 .form-group {
@@ -115,6 +119,10 @@ by-right-side {
 a {
     text-decoration: none;
 }
+a:hover {
+    text-decoration-line: underline;
+}
+
 
 .small-picture {
     height: 60px;
@@ -143,8 +151,7 @@ a {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover; 
-    border-radius: 50%; 
-    margin-right: 10px; 
+    border-radius: 50%;
 }
 
 .error-pic {

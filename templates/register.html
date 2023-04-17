@@ -53,22 +53,27 @@
             {% endif %}
         </div>
     </form>
-    <script defer>
-        var teacher_button = document.getElementById('teacher-button');
-        var student_button = document.getElementById('student-button');
-        var enter_code_pole = document.getElementById('enter-code');
+{% endblock %}
 
-        function switchRadioChoiceToTeacher() {
-            teacher_button.checked = true;
-            student_button.checked = false;
-            enter_code_pole.hidden = true;
-        };
+{% block register_script %}
 
-        function switchRadioChoiceToStudent() {
-            teacher_button.checked = false;
-            student_button.checked = true;
-            enter_code_pole.hidden = false;
-        };
+<script defer>
+    var teacher_button = document.getElementById('teacher-button');
+    var student_button = document.getElementById('student-button');
+    var enter_code_pole = document.getElementById('enter-code');
 
-    </script>
+    function switchRadioChoiceToTeacher() {
+        teacher_button.checked = true;
+        student_button.checked = false;
+        enter_code_pole.hidden = true;
+    };
+
+    function switchRadioChoiceToStudent() {
+        teacher_button.checked = false;
+        student_button.checked = true;
+        enter_code_pole.hidden = false;
+    };
+
+</script>
+
 {% endblock %}

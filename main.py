@@ -5,6 +5,8 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 
 import datetime as dt
 from statistics import mean
+from random import choices
+from string import ascii_letters, digits
 
 from data import db_session
 from data.users import Users
@@ -14,16 +16,24 @@ from data.questions import Questions
 from data.works import Works
 from data.solved_works import SolvedWorks
 
+
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
-from forms.chat_form import ChatForm
+from forms.invite_student import InviteForm
+from forms.group_creating_form import GroupCreatingForm
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "maxkarnlol"
+app.config["SECRET_KEY"] = "maxkarnandjenyalol"
 socketio = SocketIO(app, cors_allowed_origins='*')
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def chose_socket_host():
+    tunnel = input('input L/N (Local/Ngrok):')
+    with open('./static/', 'w') as js_file:
+        pass
 
 
 @login_manager.user_loader
@@ -42,14 +52,41 @@ def handle_connect(data):
     msg_object.group_id = data.get('group_id')
     db_sess.add(msg_object)
     db_sess.commit()
-    emit('updateMessage', {'message': message, 'sender_name': f'{current_user.first_name} {current_user.second_name}'}, to=data.get('group_id'))
+    json = {'message': message,
+            'sender_name': f'{current_user.first_name} {current_user.second_name}',
+            'pic_url': url_for('static', filename='img/erdogan.jpg'),}
+    emit('updateMessage', json, to=data.get('group_id'))
+
+
+@socketio.on('accept_invite')
+def accept_handle(data):
+    group_id = data.get('group_id')
+    db_sess = db_session.create_session()
+    group = db_sess.query(Groups).filter(Groups.id == group_id).first()
+    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+    user.invites_group.remove(group)
+    user.groups.append(group)
+    db_sess.commit()
+    print('accept done')
+
+
+@socketio.on('cancel_invite')
+def cancel_handle(data):
+    group_id = data.get('group_id')
+    db_sess = db_session.create_session()
+    group = db_sess.query(Groups).filter(Groups.id == group_id).first()
+    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+    user.invites_group.remove(group)
+    db_sess.commit()
+    print('cancel_done')
 
 
 @socketio.on('join_group')
 def on_join(data):
     group = data.get('group')
-    join_room(group)
-    print(request.sid)
+    if group:
+        join_room(group)
+        print(request.sid)
     print('user connected')
 
 
@@ -92,7 +129,6 @@ def registration():
             first_name=form.first_name.data,
             second_name=form.second_name.data,
         )
-        teacher_type = request.form.get("teacher-button")
         student_type = request.form.get("student-button")
         if student_type:
             user.user_type = "student"
@@ -156,16 +192,27 @@ def profile_userid(user_id):
 @app.route('/chat', methods=['POST', 'GET'])
 @login_required
 def chat():
-    form = ChatForm()
+    form = InviteForm()
     db_sess = db_session.create_session()
-    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
     page = request.args.get('chat_id', default=None, type=int)
-    groups = user.groups
+    if form.validate_on_submit():
+        student_email = request.form.get('email')
+        user = db_sess.query(Users).filter(Users.email == student_email).first()
+        group = db_sess.query(Groups).filter(Groups.id == page).first()
+        user.invites_group.append(group)
+        db_sess.commit()
+    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+    if user.user_type == 'student':
+        groups = user.groups
+        invites = user.invites_group
+    else:
+        groups = db_sess.query(Groups).filter(Groups.teacher == user)
+        invites = []
     if page:
         curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
         messages = db_sess.query(Messages).filter(Messages.group_id == page)
         curr_group = db_sess.query(Groups).filter(Groups.id == page).first()
-        print(groups, curr_group)
+        print(groups)
         if curr_group not in groups:
             abort(405)
     else:
@@ -175,9 +222,45 @@ def chat():
         'title': 'Чат',
         'groups': groups,
         'chosen_group': curr_page,
-        'messages': messages
+        'messages': messages,
+        'invites': invites
     }
     return render_template('chat.html', form=form, **data)
+
+
+@app.route('/group/creating', methods=["GET", "POST"])
+@login_required
+def groups_creating():
+    print(current_user.groups)
+    db_sess = db_session.create_session()
+    form = GroupCreatingForm()
+    params = {
+        "title": "Создание группы",
+        "form": form
+    }
+    if current_user.user_type == "student":
+        # TODO: Make 403 error response
+        abort(405)
+    if form.validate_on_submit():
+        name = form.name.data
+        invite_code = ''.join(choices(ascii_letters + digits, k=16))
+        while db_sess.query(Groups).filter(Groups.code == invite_code).first():
+            invite_code = ''.join(choices(ascii_letters + digits, k=16))
+        new_group = Groups(
+            name=name,
+            teacher_id=current_user.id,
+            code=invite_code
+        )
+        db_sess.add(new_group)
+        db_sess.commit()
+        params["success"] = True
+        params["new_group_name"] = name
+        params["new_group_code"] = invite_code
+        return render_template("groups_creating.html", **params)
+
+    params["title"] = "Создание группы"
+    params["success"] = False
+    return render_template("groups_creating.html", **params)
 
 
 @app.route("/logout")
