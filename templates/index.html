@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="form-group bg-light rounded bottom-decoration">
+        <p class="fs-3 text-center">
+            Приветствуем Вас на нашем сайте!
+        </p>
+        <p class="fs-5 text-muted">Мы предлагаем вам удобный и простой инструмент для создания тестов для ваших
+            учеников. Наш сервис позволяет создавать тесты на любые темы и уровни сложности.</p>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col">
+                <div class="card" style="width: 18rem; background-color: white">
+                    <div class="card-body">
+                        <div class="card-title fw-bold">
+                            Задания
+                        </div>
+                        <div class="card-text text-body-secondary">Создавайте собственные задания, устанавливайте
+                            дедлайны ипросматривайте результаты учеников
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" style="width: 18rem; background-color: white">
+                    <div class="card-body">
+                        <div class="card-title fw-bold">
+                            Группы
+                        </div>
+                        <div class="card-text text-body-secondary">Создавайте группы, чтобы систематизировать учеников и
+                            общайтесь.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" style="width: 18rem; background-color: white">
+                    <div class="card-body">
+                        <div class="card-title fw-bold">
+                            Протестуйте!
+                        </div>
+                        <div class="card-text text-body-secondary">Если ученику показалось, что задание имеет
+                            некорректный ответ, он может пожаловаться на него, и учитель еще раз проверит задание на
+                            предмет корректности
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group d-grid gap-2">
+        <a class="btn btn-primary" href="/register">Попробуйте прямо сейчас!</a>
+    </div>
+
+{% endblock %}

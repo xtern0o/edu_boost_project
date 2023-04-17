@@ -24,7 +24,7 @@
         <div class="navbar-container bg-light bottom-decoration">
             <nav class="navbar navbar-expand-sm bg-body-tertiary">
                 <div class="container-fluid">
-                    <a class="navbar-brand fw-bold" style="color: black" href="/">Spermum.edu</a>
+                    <a class="navbar-brand fw-bold hover-a" style="color: black" href="/">Spermum.edu</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -34,20 +34,20 @@
                             {% if current_user.is_authenticated %}
                                 {% if current_user.user_type == "student" %}
                                     <li class="nav-item">
-                                        <a class="nav-link active hover-link" style="color: black" href="/chat">Группы</a>
+                                        <a class="nav-link active hover-link hover-a" style="color: black" href="/chat">Группы</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link active hover-link" style="color: black" href="/works">Задания</a>
+                                        <a class="nav-link active hover-link hover-a" style="color: black" href="/works">Задания</a>
                                     </li>
                                 {% elif current_user.user_type == "teacher" %}
                                     <li class="nav-item">
-                                        <a class="nav-link active hover-link" style="color: black" href="/chat">Группы</a>
+                                        <a class="nav-link active hover-link hover-a" style="color: black" href="/chat">Группы</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link active hover-link" style="color: black" href="/group/creating">Создать группу</a>
+                                        <a class="nav-link active hover-link hover-a" style="color: black" href="/group/creating">Создать группу</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link active hover-link" style="color: black" href="/works">Задания</a>
+                                        <a class="nav-link active hover-link hover-a" style="color: black" href="/works">Задания</a>
                                     </li>
                                     <!-- Что то еще я не придумал !-->
                                 {% endif %}

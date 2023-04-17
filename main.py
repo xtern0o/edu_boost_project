@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, flash, get_flashed_messages, \
     url_for, abort, jsonify, request, session, make_response
-from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user, user_unauthorized
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
 import datetime as dt
@@ -100,46 +100,50 @@ def on_leave(data):
 @app.route('/')
 @app.route('/index')
 def index():
-    return "Index"
+    return render_template("index.html", title="Главная страница")
 
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        user = db_sess.query(Users).filter(Users.email == form.email.data).first()
-        if user:
-            if user.check_password(form.password.data):
-                login_user(user, remember=form.remember_me.data)
-                return redirect(f"/profile/{user.id}")
+    if user_unauthorized:
+        form = LoginForm()
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            user = db_sess.query(Users).filter(Users.email == form.email.data).first()
+            if user:
+                if user.check_password(form.password.data):
+                    login_user(user, remember=form.remember_me.data)
+                    return redirect(f"/profile/{user.id}")
+                return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
             return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
-        return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
-    return render_template("login.html", title="Авторизация", form=form)
+        return render_template("login.html", title="Авторизация", form=form)
+    return redirect("/profile")
 
 
 @app.route("/register", methods=["POST", "GET"])
 def registration():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        user = Users(
-            email=form.email.data,
-            remember=form.remember.data,
-            first_name=form.first_name.data,
-            second_name=form.second_name.data,
-        )
-        student_type = request.form.get("student-button")
-        if student_type:
-            user.user_type = "student"
-        else:
-            user.user_type = "teacher"
-        user.set_password(form.password.data)
-        db_sess.add(user)
-        db_sess.commit()
-        login_user(user, remember=form.remember.data)
-        return redirect("/profile")
-    return render_template("register.html", title="Регистрация", form=form)
+    if user_unauthorized:
+        form = RegisterForm()
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            user = Users(
+                email=form.email.data,
+                remember=form.remember.data,
+                first_name=form.first_name.data,
+                second_name=form.second_name.data,
+            )
+            student_type = request.form.get("student-button")
+            if student_type:
+                user.user_type = "student"
+            else:
+                user.user_type = "teacher"
+            user.set_password(form.password.data)
+            db_sess.add(user)
+            db_sess.commit()
+            login_user(user, remember=form.remember.data)
+            return redirect("/profile")
+        return render_template("register.html", title="Регистрация", form=form)
+    return redirect("/profile")
 
 
 @app.route("/profile")
@@ -231,7 +235,6 @@ def chat():
 @app.route('/group/creating', methods=["GET", "POST"])
 @login_required
 def groups_creating():
-    print(current_user.groups)
     db_sess = db_session.create_session()
     form = GroupCreatingForm()
     params = {

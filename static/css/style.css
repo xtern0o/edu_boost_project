@@ -1,35 +1,45 @@
 html,
 body {
     height: 100%;
+    background: #FFFFFF;
+    background: -webkit-linear-gradient(top, #FFFFFF, #74619E);
+    background: -moz-linear-gradient(top, #FFFFFF, #74619E);
+    background: linear-gradient(to bottom, #FFFFFF, #74619E);
 }
+
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
+
 h1 {
     text-align: left;
     font-weight: bold;
     font-family: "Arial", serif;
     font-size: 40px;
 }
+
 h2 {
     text-align: center;
     font-weight: bolder;
     font-family: "Arial", serif;
     font-size: 40px;
 }
+
 h3 {
     text-align: center;
     font-weight: bolder;
     font-family: "Arial", serif;
     font-size: 20px;
 }
+
 h4 {
     text-align: left;
     font-family: "Arial", serif;
     font-size: 20px;
     color: #b5b8b1;
 }
+
 table {
     width: 100%
 }
@@ -39,41 +49,50 @@ table {
     font-family: "Arial", sans-serif;
     font-size: 20px;
 }
+
 .navbar-container {
     padding: 10px;
 
 }
+
 .classic-container {
     padding: 10px;
     margin: 20px auto;
     max-width: 1000px;
     border-radius: 10px;
 }
+
 .form-group {
     padding: 5px;
-    margin: 5px auto;   
+    margin: 5px auto;
 }
+
 .default-label {
     font-family: "Arial", serif;
     font-size: 14px;
     display: block;
 }
+
 .upper-decoration {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
 .bottom-decoration {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
+
 .color-div {
     width: 300px;
     height: 300px;
     margin: auto;
 }
+
 .form-child {
     margin: 2px auto;
 }
+
 .message-block {
     overflow: auto;
     margin-bottom: 15px;
@@ -83,26 +102,33 @@ table {
     background: white;
     padding: 10px;
 }
+
 .content {
-  flex: 1 0 auto;
+    flex: 1 0 auto;
 }
+
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
+
 .footer {
     flex: 0 0 auto;
 }
+
 h2.text-by-left {
     text-align: left;
 }
+
 by-right-side {
     text-align: right;
 }
+
 .nowrap {
     display: inline;
 }
+
 .navbar-title {
     text-align: left;
     font-weight: bold;
@@ -116,10 +142,11 @@ by-right-side {
     background-color: rgb(251, 251, 251);
 }
 
-a {
+.hover-a {
     text-decoration: none;
 }
-a:hover {
+
+.hover-a:hover {
     text-decoration-line: underline;
 }
 
@@ -129,10 +156,10 @@ a:hover {
     width: 60px;
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: cover; 
-    border-radius: 50%; 
-    margin-right: 10px; 
-    
+    background-size: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+
 }
 
 .message-card {
@@ -150,7 +177,7 @@ a:hover {
     height: 100px;
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: cover; 
+    background-size: cover;
     border-radius: 50%;
 }
 
@@ -164,6 +191,7 @@ a:hover {
     padding: 3px;
     margin: 3px;
 }
+
 .info-box {
     border-radius: 10px;
     height: 70px;
