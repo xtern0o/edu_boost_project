@@ -14,6 +14,7 @@ from data.groups import Groups
 from data.messages import Messages
 from data.questions import Questions
 from data.works import Works
+from data.options import Options
 from data.solved_works import SolvedWorks
 
 
@@ -21,6 +22,7 @@ from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.invite_student import InviteForm, JoinGroupForm
 from forms.group_creating_form import GroupCreatingForm
+from forms.create_question_form import CreateQuestionForm
 
 
 app = Flask(__name__)
@@ -274,6 +276,24 @@ def groups_creating():
     params["title"] = "Создание группы"
     params["success"] = False
     return render_template("groups_creating.html", **params)
+
+
+@app.route('/works/creating', methods=['GET', 'POST'])
+@login_required
+def create_works():
+    form = CreateQuestionForm()
+    db_sess = db_session.create_session()
+    if form.validate_on_submit():
+        header = request.form.get('name')
+        text = request.form.get('text')
+        correct_answer = request.form.get('correct_answer')
+        question = Options()
+        question.text = text
+        question.header = header
+        question.correct_answer = correct_answer
+        db_sess.add(Questions)
+        db_sess.commit()
+    return render_template('work_creating.html', form=form)
 
 
 @app.route("/logout")

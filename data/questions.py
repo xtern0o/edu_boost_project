@@ -10,10 +10,11 @@ class Questions(SqlAlchemyBase):
     # Поля таблицы
     id = sqlalchemy.Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
     work_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("works.id"))
+    header = sqlalchemy.Column(sqlalchemy.String)
     text = sqlalchemy.Column(sqlalchemy.String)
     answer_type = sqlalchemy.Column(sqlalchemy.String)
-    input_form = sqlalchemy.Column(sqlalchemy.String)
     correct_answer = sqlalchemy.Column(sqlalchemy.String)
 
     # orm-отношения
     work = orm.relationship("Works")
+    options = orm.relationship('Options', back_populates='question')
