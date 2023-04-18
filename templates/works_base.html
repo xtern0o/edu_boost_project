@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-secondary-subtle">
+    <div class="form-group">
+        <div class="row">
+            <div class="col">
+                <p class="fs-4 fw-bold">
+                    {{ work.name }}
+                </p>
+            </div>
+            <div class="col gap-2 d-md-flex justify-content-md-end">
+                {% if work.time.seconds > work.time.seconds * 0.2 %}
+                <p class="fs-5 badge text-bg-secondary">
+                    {{ work.time.minutes }}:{{ work.time.seconds // work.time.minutes * 60 }}
+                </p>
+                {% else %}
+                <p class="fs-5 badge text-bg-danger">
+                    {{ work.time.minutes }}:{{ work.time.seconds // work.time.minutes * 60 }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% block work_content %}
+{% endblock %}
+
+{% endblock %}

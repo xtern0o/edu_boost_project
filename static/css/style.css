@@ -197,3 +197,8 @@ by-right-side {
     height: 70px;
     width: auto;
 }
+
+xmp {
+    text-font: Arial;
+    text-size: 14px;
+}

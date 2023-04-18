@@ -1,0 +1,9 @@
+{% extends "works_base.html" %}
+
+{% block work_content %}
+<form action="" method="post" class="form-group rounded" style="background-color: white">
+    {{ form.hidden_tag() }}
+    <p class="fs-5">{{ work.info }}</p>
+</form>
+
+{% endblock %}
