@@ -42,7 +42,7 @@ class Users(SqlAlchemyBase, UserMixin):
     admin = orm.relationship('Groups', back_populates='teacher')
     sender = orm.relationship('Messages', back_populates='sender')
     creator = orm.relationship('Works', back_populates='creator')
-    solved_work = orm.relationship('SolvedWorks', back_populates='solved_user')
+    solved_works = orm.relationship('SolvedWorks', back_populates='solved_user')
     invites_group = orm.relationship('Groups', secondary='users_to_invites_to_groups', backref='invites')
 
     # функции

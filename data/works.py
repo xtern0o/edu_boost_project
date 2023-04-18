@@ -19,6 +19,8 @@ class Works(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
     creator_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    info = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    time = sqlalchemy.Column(sqlalchemy.Time, nullable=False)
     deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
 
     # orm-отношения
