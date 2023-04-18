@@ -16,11 +16,11 @@ from data.questions import Questions
 from data.works import Works
 from data.solved_works import SolvedWorks
 
-
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.invite_student import InviteForm, JoinGroupForm
 from forms.group_creating_form import GroupCreatingForm
+from forms.works_beginning_form import WorksBeginningForm
 
 
 app = Flask(__name__)
@@ -274,6 +274,24 @@ def groups_creating():
     params["title"] = "Создание группы"
     params["success"] = False
     return render_template("groups_creating.html", **params)
+
+
+@app.route("/works/<int:work_id>")
+@login_required
+def works_beginning(work_id):
+    form = WorksBeginningForm()
+    db_sess = db_session.create_session()
+    work = db_sess.query(Works).get(work_id)
+    if form.validate_on_submit():
+        if current_user.user_type == "student":
+            if work not in current_user.solved_works:
+                # TODO: start test
+                return redirect("/works/<int:work_id>/1")
+            # TODO: show mark
+            return render_template("works_beginning.html", title=work.name, form=form, work=work)
+        # TODO: show results by students
+        return render_template("works_beginning.html", title=work.name, form=form, work=work)
+    return render_template("works_beginning.html", title=work.name, form=form, work=work)
 
 
 @app.route("/logout")
