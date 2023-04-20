@@ -21,8 +21,11 @@ from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.invite_student import InviteForm, JoinGroupForm
 from forms.group_creating_form import GroupCreatingForm
-from forms.create_question_form import CreateQuestionForm
+from forms.create_work_form import CreateWorkForm
 from forms.works_beginning_form import WorksBeginningForm
+from forms.edit_work_form import EditNameWorkForm
+from forms.create_question_form import CreateQuestionForm
+from forms.edit_question_form import EditTextQuestionForm, EditCorrectAnswerQuestionForm, EditTitleQuestionForm
 
 
 app = Flask(__name__)
@@ -164,10 +167,10 @@ def profile_userid(user_id):
         for group in user.groups:
             works.extend(group.works)
         if user.user_type == "student":
-            marks = list(map(lambda n: n.mark, user.solved_work))
+            marks = list(map(lambda n: n.mark, user.solved_works))
             params = {
                 "title": f"{user.first_name} {user.second_name}",
-                "n_of_works": len(user.solved_work),
+                "n_of_works": len(user.solved_works),
                 "avg_mark": "-" if not marks else mean(marks),
                 "groups": user.groups,
                 "works": works,
@@ -222,8 +225,6 @@ def chat():
         invites = user.invites_group
     else:
         groups = db_sess.query(Groups).filter(Groups.teacher == user).all()
-        print(groups)
-        print('123')
         invites = []
     if page:
         curr_page = db_sess.query(Groups).filter(Groups.id == page).first()
@@ -278,21 +279,63 @@ def groups_creating():
     return render_template("groups_creating.html", **params)
 
 
+@app.route('/works/editing/<int:work_id>', methods=['GET', 'POST'])
+@login_required
+def edit_works(work_id):
+    change_work_name_form = EditNameWorkForm()
+    create_question_form = CreateQuestionForm()
+    change_question_title = EditTitleQuestionForm()
+    change_question_text = EditTextQuestionForm()
+    change_question_correct_answer = EditCorrectAnswerQuestionForm()
+    db_sess = db_session.create_session()
+    work = db_sess.query(Works).filter(Works.id == work_id).first()
+    if change_work_name_form.validate_on_submit():
+        name = request.form.get('name')
+        work.name = name
+        db_sess.commit()
+    if create_question_form.validate_on_submit():
+        title = request.form.get('title')
+        text = request.form.get('text')
+        correct_answer = request.form.get('correct_answer')
+        question = Questions()
+        question.header = title
+        question.text = text
+        question.correct_answer = correct_answer
+        question.answer_type = 'text'
+        question.work = work
+        db_sess.add(question)
+        db_sess.commit()
+    if change_question_text.validate_on_submit():
+        pass
+    if change_question_title.validate_on_submit():
+        print(list(request.form.items()))
+    if change_question_correct_answer.validate_on_submit():
+        pass
+    data = {
+        'work_name': work.name,
+        'questions': work.questions
+    }
+    return render_template('work_editing.html', change_work_name_form=change_work_name_form,
+                           create_question_form=create_question_form, change_question_title=change_question_title,
+                           change_question_text=change_question_text,
+                           change_question_correct_answer=change_question_correct_answer, **data)
+
+
 @app.route('/works/creating', methods=['GET', 'POST'])
 @login_required
 def create_works():
-    form = CreateQuestionForm()
+    form = CreateWorkForm()
     db_sess = db_session.create_session()
     if form.validate_on_submit():
-        header = request.form.get('name')
-        text = request.form.get('text')
-        correct_answer = request.form.get('correct_answer')
-        question = Options()
-        question.text = text
-        question.header = header
-        question.correct_answer = correct_answer
-        db_sess.add(Questions)
+        user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+        name = request.form.get('name')
+        work = Works()
+        work.name = name
+        work.creator = user
+        db_sess.add(work)
         db_sess.commit()
+        id = work.id
+        return redirect(f'/works/editing/{id}')
     return render_template('work_creating.html', form=form)
 
 

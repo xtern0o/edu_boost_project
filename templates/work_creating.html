@@ -1,46 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
 <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Введите название теста">
+    {{ form.name(class="form-control", placeholder="Введите название теста") }}
+    {% for error in form.name.errors %}
+    <p class="alert alert-danger align-center" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
 </div>
 <div>
-    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-            data-bs-target="#exampleModal">
-        Добавить вопрос
-    </button>
-
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Новый вопрос</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <form action="" method="post">
-                    {{ form.hidden_tag() }}
-                <div class="modal-body">
-
-                        <div class="input-group mb-3">
-                        {{ form.name(class="form-control", placeholder="Заголовок вопроса") }}
-                        </div>
-                        <div class="input-group mb-3">
-                            {{ form.text(class="form-control", placeholder="Вопрос") }}
-                        </div>
-                        <div>
-                            {{ form.correct_answer(class="form-control", placeholder="Правильный ответ") }}
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть
-                    </button>
-                    {{ form.submit(class="btn btn-success") }}
-                </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{ form.submit(class="btn btn-success") }}
 </div>
+</form>
 {% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form class="row g-3" method="post" action="">
+
+    {{ change_work_name_form.hidden_tag() }}
+
+    <div class="col-auto">
+        {{ change_work_name_form.name(class="form-control", value=work_name) }}
+    </div>
+    <div class="col-auto">
+        {{ change_work_name_form.submit(class="btn btn-secondary mb-3") }}
+    </div>
+</form>
+
+<div class="questions">
+    {% if questions %}
+        {% for question in questions %}
+        <div class="card edit-question">
+            <div class="card-body">
+                <form class="row g-3" action="" method="post">
+                    {{ change_question_title.hidden_tag() }}
+                    <div class="col-auto">
+                        {{ change_question_title.title(class="form-control", value=question.header) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ change_question_title.submit(class="btn btn-secondary mb-3") }}
+                    </div>
+                    {{ change_question_title.question_id(hidden=True, value=question.id) }}
+                </form>
+                <form action="" method="post">
+                    <div class="input-group mb-3">
+                            {{ change_question_text.text(class="form-control", value=question.text) }}
+                            {{ change_question_title.submit(class="btn btn-secondary") }}
+                    </div>
+                    {{ change_question_title.question_id(hidden=True, value=question.id) }}
+                </form>
+                <form class="row g-3" action="" method="post">
+                    <div class="input-group mb-3">
+                        {{ change_question_correct_answer.correct_answer(class="form-control", value=question.correct_answer) }}
+                        {{ change_question_title.submit(class="btn btn-secondary") }}
+                    </div>
+                    {{ change_question_title.question_id(hidden=True, value=question.id) }}
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="card">
+        <div class="card-body">
+            <h5>Добавьте в свой тест вопросы</h5>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="add-question-block">
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#QuestionModal">
+        Добавить вопрос
+    </button>
+  
+    <div class="modal fade" id="QuestionModal" tabindex="-1" aria-labelledby="QuestionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+        <form action="" method="post" name="123">
+            {{ create_question_form.hidden_tag() }}
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="QuestionModalLabel">Новый вопрос</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Заголовок</span>
+                            {{ create_question_form.title(class="form-control", aria_label="Sizing example input", aria_describedby="inputGroup-sizing-default") }}
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Вопрос</span>
+                            {{ create_question_form.text(class="form-control", aria_label="Sizing example input", aria_describedby="inputGroup-sizing-default") }}
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Правильный ответ</span>
+                            {{ create_question_form.correct_answer(class="form-control", aria_label="Sizing example input", aria_describedby="inputGroup-sizing-default") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                {{ create_question_form.submit(class="btn btn-success") }}
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

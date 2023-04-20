@@ -202,3 +202,12 @@ xmp {
     text-font: Arial;
     text-size: 14px;
 }
+
+
+.add-question-block {
+    margin-top: 15px;
+}
+
+.edit-question {
+    margin-top: 5px;
+}

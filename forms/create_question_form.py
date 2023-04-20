@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Length
 
 
 class CreateQuestionForm(FlaskForm):
-    name = StringField("Название группы", validators=[DataRequired()])
-    text = StringField("Текст вопроса")
-    correct_answer = StringField("Правильный ответ")
-    submit = SubmitField("Создать")
+    title = StringField(validators=[DataRequired()])
+    text = StringField(validators=[DataRequired()])
+    correct_answer = StringField(validators=[DataRequired()])
+    submit = SubmitField("Создать вопрос")
