@@ -302,11 +302,14 @@
 
 
         $('#send_message_button').on('click', function () {
-            socket.emit('send_message_json',
-                {
-                    'message_text': $('#message_text').val(),
-                    'group_id': Number(getUrlParams('chat_id'))
-                });
+            let message = $('#message_text').val();
+            if (message.length != 0) {
+                socket.emit('send_message_json',
+                    {
+                        'message_text': message,
+                        'group_id': Number(getUrlParams('chat_id'))
+                    });
+            }
             $('#message_text').val('');
         });
 

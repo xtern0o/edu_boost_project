@@ -245,7 +245,7 @@ def chat():
     return render_template('chat.html', form_accept=form_accept, form=form, **data)
 
 
-@app.route('/group/creating', methods=["GET", "POST"])
+@app.route('/chat/creating', methods=["GET", "POST"])
 @login_required
 def groups_creating():
     db_sess = db_session.create_session()
