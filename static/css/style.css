@@ -5,6 +5,7 @@ body {
     background: -webkit-linear-gradient(top, #FFFFFF, #74619E);
     background: -moz-linear-gradient(top, #FFFFFF, #74619E);
     background: linear-gradient(to bottom, #FFFFFF, #74619E);
+    background-attachment: fixed;
 }
 
 * {
@@ -210,4 +211,10 @@ xmp {
 
 .edit-question {
     margin-top: 5px;
+}
+
+.footer-icon {
+    width: 30px;
+    height: 30px;
+    margin: 0px 5px;
 }

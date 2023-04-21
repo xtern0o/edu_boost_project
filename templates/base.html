@@ -24,7 +24,7 @@
         <div class="navbar-container bg-light bottom-decoration">
             <nav class="navbar navbar-expand-sm bg-body-tertiary">
                 <div class="container-fluid">
-                    <a class="navbar-brand fw-bold hover-a" style="color: black" href="/">Spermum.edu</a>
+                    <a class="navbar-brand fw-bold hover-a" style="color: black" href="/">Online.edu</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -104,8 +104,17 @@
         </div>
     </main>
 
-    <footer class="footer">
-        <p class="p-3 bg-dark text-muted text-center fs-6" style="margin-bottom: 0px;">copyright: 2023</p>
+    <footer class="footer p-3 bg-dark">
+        <div class="row">
+            <div class="col">
+                <img src="{{ url_for('static', filename='img/telegram.png') }}" class="footer-icon">
+                <a class="hover-a text-center fs-6" style="margin-bottom: 0px; color: grey" href="https://t.me/chaychus">Мерескин Евгений</a>
+                <a class="hover-a text-center fs-6" style="margin-bottom: 0px; color: grey" href="https://t.me/xterno_tg">Карнажицкий Максим</a>
+            </div>
+            <div class="col">
+                <p class="text-center fs-6" style="margin-bottom: 0px; color: grey">copyright: 2023</p>
+            </div>
+        </div>
     </footer>
 
 </div>
