@@ -12,6 +12,11 @@
                 </p>
             {% endfor %}
             {{ form.password(class="form-control form-child upper-decoration", placeholder=form.password.label.text) }}
+            {% for error in form.password.errors %}
+                <p class="alert alert-danger align-center" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
             <div class="input-group">
                 {{ form.first_name(class="form-control form-child", placeholder=form.first_name.label.text) }}
                 {{ form.second_name(class="form-control form-child", placeholder=form.second_name.label.text) }}
