@@ -70,6 +70,4 @@
 ![image](https://user-images.githubusercontent.com/97905639/233480322-a7d011e8-b059-42b7-a20b-4717a861fdbb.png)
 
 
-# Презентация (пока черновик)))
-![image](https://user-images.githubusercontent.com/78041040/232845802-d53f455a-546e-48f8-92eb-ec21dcd03a34.png)
-
+# [Презентация](https://docs.google.com/presentation/d/19b075xh-nVXuhlvDGVFSfTAJnSKzY0Q6sH3H2uOOXmA/edit#slide=id.g1e19608e034_3_69)
