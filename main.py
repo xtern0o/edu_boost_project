@@ -72,7 +72,7 @@ def accept_handle(data):
     user.invites_group.remove(group)
     user.groups.append(group)
     db_sess.commit()
-    print('accept done')
+    print('accepted successfully')
 
 
 @socketio.on('cancel_invite')
@@ -293,7 +293,8 @@ def edit_works(work_id):
         name = request.form.get('name')
         work.name = name
         db_sess.commit()
-    if create_question_form.validate_on_submit():
+        print('name')
+    elif create_question_form.validate_on_submit():
         title = request.form.get('title')
         text = request.form.get('text')
         correct_answer = request.form.get('correct_answer')
@@ -305,12 +306,28 @@ def edit_works(work_id):
         question.work = work
         db_sess.add(question)
         db_sess.commit()
-    if change_question_text.validate_on_submit():
-        pass
-    if change_question_title.validate_on_submit():
-        print(list(request.form.items()))
-    if change_question_correct_answer.validate_on_submit():
-        pass
+        print('create')
+    elif change_question_text.validate_on_submit():
+        quest_id = request.form.get('question_id')
+        text = request.form.get('text')
+        question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
+        question.text = text
+        db_sess.commit()
+        print('tex')
+    elif change_question_title.validate_on_submit():
+        quest_id = request.form.get('question_id')
+        header = request.form.get('title')
+        question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
+        question.header = header
+        db_sess.commit()
+        print('tit')
+    elif change_question_correct_answer.validate_on_submit():
+        quest_id = request.form.get('question_id')
+        answer = request.form.get('correct_answer')
+        question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
+        question.correct_answer = answer
+        db_sess.commit()
+        print('corr')
     data = {
         'work_name': work.name,
         'questions': work.questions

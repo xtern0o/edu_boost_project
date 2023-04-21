@@ -19,6 +19,7 @@
         {% for question in questions %}
         <div class="card edit-question">
             <div class="card-body">
+                <!-- Изменение header'a -->
                 <form class="row g-3" action="" method="post">
                     {{ change_question_title.hidden_tag() }}
                     <div class="col-auto">
@@ -29,19 +30,25 @@
                     </div>
                     {{ change_question_title.question_id(hidden=True, value=question.id) }}
                 </form>
+                <!-- Изменение текста вопроса -->
                 <form action="" method="post">
+                    {{ change_question_text.hidden_tag() }}
+                    <label for="text">Вопрос</label>
                     <div class="input-group mb-3">
                             {{ change_question_text.text(class="form-control", value=question.text) }}
-                            {{ change_question_title.submit(class="btn btn-secondary") }}
+                            {{ change_question_text.submit(class="btn btn-secondary") }}
                     </div>
-                    {{ change_question_title.question_id(hidden=True, value=question.id) }}
+                    {{ change_question_text.question_id(hidden=True, value=question.id) }}
                 </form>
-                <form class="row g-3" action="" method="post">
-                    <div class="input-group mb-3">
+                <!-- Изменение правильного ответа -->
+                <form action="" method="post">
+                    {{ change_question_correct_answer.hidden_tag() }}
+                    <label for="correct_answer">Правильный ответ</label>
+                    <div class="input-group">
                         {{ change_question_correct_answer.correct_answer(class="form-control", value=question.correct_answer) }}
-                        {{ change_question_title.submit(class="btn btn-secondary") }}
+                        {{ change_question_correct_answer.submit(class="btn btn-secondary") }}
                     </div>
-                    {{ change_question_title.question_id(hidden=True, value=question.id) }}
+                    {{ change_question_correct_answer.question_id(hidden=True, value=question.id) }}
                 </form>
             </div>
         </div>
