@@ -1,18 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form action="" method="post">
+<form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
-<div class="input-group mb-3">
-    {{ form.name(class="form-control", placeholder="Введите название теста") }}
-    {% for error in form.name.errors %}
-    <p class="alert alert-danger align-center" role="alert">
-        {{ error }}
-    </p>
-    {% endfor %}
-</div>
-<div>
-    {{ form.submit(class="btn btn-success") }}
-</div>
+    <div class="form-group">
+        {{ form.name(class="form-control", placeholder="Введите название теста") }}
+        {% for error in form.name.errors %}
+        <p class="alert alert-danger align-center" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        {{ form.info(class="form-control", placeholder="Информация о работе") }}
+         {% for error in form.info.errors %}
+        <p class="alert alert-danger align-center" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div class="col form-group">
+        {{form.deadline.label}}
+        {{ form.deadline(class="form-control", placeholder="Дата сдачи") }}
+           {% for error in form.deadline.errors %}
+        <p class="alert alert-danger align-center" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-success") }}
+    </div>
 </form>
 {% endblock %}

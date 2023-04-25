@@ -4,13 +4,16 @@
 
 <form class="row g-3" method="post" action="">
 
-    {{ change_work_name_form.hidden_tag() }}
+    {{ change_work_form.hidden_tag() }}
 
     <div class="col-auto">
-        {{ change_work_name_form.name(class="form-control", value=work_name) }}
+        {{ change_work_form.name(class="form-control", value=work_name) }}
     </div>
     <div class="col-auto">
-        {{ change_work_name_form.submit(class="btn btn-secondary mb-3") }}
+        {{ change_work_form.deadline(class="form-control", placeholder="Дата сдачи", type="datetime-local") }}
+    </div>
+    <div class="col-auto">
+        {{ change_work_form.submit(class="btn btn-secondary mb-3") }}
     </div>
 </form>
 
@@ -19,36 +22,29 @@
         {% for question in questions %}
         <div class="card edit-question">
             <div class="card-body">
-                <!-- Изменение header'a -->
-                <form class="row g-3" action="" method="post">
-                    {{ change_question_title.hidden_tag() }}
-                    <div class="col-auto">
-                        {{ change_question_title.title(class="form-control", value=question.header) }}
-                    </div>
-                    <div class="col-auto">
-                        {{ change_question_title.submit(class="btn btn-secondary mb-3") }}
-                    </div>
-                    {{ change_question_title.question_id(hidden=True, value=question.id) }}
-                </form>
-                <!-- Изменение текста вопроса -->
                 <form action="" method="post">
-                    {{ change_question_text.hidden_tag() }}
+                    {{ edit_question.hidden_tag() }}
+                    <div>
+                    <label for="title">Заголовок</label>
+                        {{ edit_question.title(class="form-control", value=question.header) }}
+                    </div>
+                    <div style="margin-top: 5px;">
                     <label for="text">Вопрос</label>
-                    <div class="input-group mb-3">
-                            {{ change_question_text.text(class="form-control", value=question.text) }}
-                            {{ change_question_text.submit(class="btn btn-secondary") }}
+                        {{ edit_question.text(class="form-control", value=question.text) }}
                     </div>
-                    {{ change_question_text.question_id(hidden=True, value=question.id) }}
-                </form>
-                <!-- Изменение правильного ответа -->
-                <form action="" method="post">
-                    {{ change_question_correct_answer.hidden_tag() }}
+                    <div style="margin-top: 5px;">
                     <label for="correct_answer">Правильный ответ</label>
-                    <div class="input-group">
-                        {{ change_question_correct_answer.correct_answer(class="form-control", value=question.correct_answer) }}
-                        {{ change_question_correct_answer.submit(class="btn btn-secondary") }}
+                        {{ edit_question.correct_answer(class="form-control", value=question.correct_answer) }}
                     </div>
-                    {{ change_question_correct_answer.question_id(hidden=True, value=question.id) }}
+                        <div class="col">
+                            <label for="points">Баллы</label>
+                            {{ edit_question.points(class="form-control", placeholder="Баллы", value=question.points) }}
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;" align="right">
+                        {{ edit_question.submit(class="btn btn-secondary") }}
+                    </div>
+                    {{ edit_question.question_id(hidden=True, value=question.id) }}
                 </form>
             </div>
         </div>

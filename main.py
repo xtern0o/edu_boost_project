@@ -23,9 +23,9 @@ from forms.invite_student import InviteForm, JoinGroupForm
 from forms.group_creating_form import GroupCreatingForm
 from forms.create_work_form import CreateWorkForm
 from forms.works_beginning_form import WorksBeginningForm
-from forms.edit_work_form import EditNameWorkForm
+from forms.edit_work_form import EditWorkForm
 from forms.create_question_form import CreateQuestionForm
-from forms.edit_question_form import EditTextQuestionForm, EditCorrectAnswerQuestionForm, EditTitleQuestionForm
+from forms.edit_question_form import EditQuestionForm
 
 
 app = Flask(__name__)
@@ -282,23 +282,23 @@ def groups_creating():
 @app.route('/works/editing/<int:work_id>', methods=['GET', 'POST'])
 @login_required
 def edit_works(work_id):
-    change_work_name_form = EditNameWorkForm()
+    change_work_form = EditWorkForm()
     create_question_form = CreateQuestionForm()
-    change_question_title = EditTitleQuestionForm()
-    change_question_text = EditTextQuestionForm()
-    change_question_correct_answer = EditCorrectAnswerQuestionForm()
+    edit_question = EditQuestionForm()
     db_sess = db_session.create_session()
     work = db_sess.query(Works).filter(Works.id == work_id).first()
-    if change_work_name_form.validate_on_submit():
+    if change_work_form.validate_on_submit():
         name = request.form.get('name')
         work.name = name
         db_sess.commit()
         print('name')
     elif create_question_form.validate_on_submit():
+        question = Questions()
         title = request.form.get('title')
         text = request.form.get('text')
         correct_answer = request.form.get('correct_answer')
-        question = Questions()
+        points = request.form.get('points')
+        deadline = request.form.get('deadline')
         question.header = title
         question.text = text
         question.correct_answer = correct_answer
@@ -306,57 +306,47 @@ def edit_works(work_id):
         question.work = work
         db_sess.add(question)
         db_sess.commit()
-        print('create')
-    elif change_question_text.validate_on_submit():
+    elif edit_question.validate_on_submit():
         quest_id = request.form.get('question_id')
         text = request.form.get('text')
+
         question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
         question.text = text
         db_sess.commit()
-        print('tex')
-    elif change_question_title.validate_on_submit():
-        quest_id = request.form.get('question_id')
-        header = request.form.get('title')
-        question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
-        question.header = header
-        db_sess.commit()
-        print('tit')
-    elif change_question_correct_answer.validate_on_submit():
-        quest_id = request.form.get('question_id')
-        answer = request.form.get('correct_answer')
-        question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
-        question.correct_answer = answer
-        db_sess.commit()
-        print('corr')
     data = {
         'work_name': work.name,
         'questions': work.questions
     }
-    return render_template('work_editing.html', change_work_name_form=change_work_name_form,
-                           create_question_form=create_question_form, change_question_title=change_question_title,
-                           change_question_text=change_question_text,
-                           change_question_correct_answer=change_question_correct_answer, **data)
+    return render_template('work_editing.html', change_work_form=change_work_form,
+                           create_question_form=create_question_form, edit_question=edit_question, **data)
 
 
 @app.route('/works/creating', methods=['GET', 'POST'])
 @login_required
 def create_works():
     form = CreateWorkForm()
-    db_sess = db_session.create_session()
     if form.validate_on_submit():
+        print('aaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa')
+        db_sess = db_session.create_session()
         user = db_sess.query(Users).filter(Users.id == current_user.id).first()
         name = request.form.get('name')
+        info = request.form.get('info')
+        deadline = request.form.get('deadline')
+        deadline = datetime.datetime.strptime(deadline, '%d.%m.%Y %H:%')
         work = Works()
         work.name = name
+        work.info = info
         work.creator = user
+        work.deadline = deadline
         db_sess.add(work)
         db_sess.commit()
         id = work.id
-        return redirect(f'/works/editing/{id}')
+        print(id)
+        return "123123"
     return render_template('work_creating.html', form=form)
 
 
-@app.route("/works/<int:work_id>")
+@app.route("/works/<int:work_id>", methods=["GET", "POST"])
 @login_required
 def works_beginning(work_id):
     form = WorksBeginningForm()
