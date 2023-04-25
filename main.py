@@ -374,6 +374,12 @@ def works_beginning(work_id):
     return render_template("works_beginning.html", title=work.name, form=form, work=work)
 
 
+@app.route("/works")
+@login_required
+def works():
+    return ""
+
+
 @app.route("/logout")
 @login_required
 def logout():
