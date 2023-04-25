@@ -133,22 +133,24 @@ def registration():
         form = RegisterForm()
         if form.validate_on_submit():
             db_sess = db_session.create_session()
-            user = Users(
-                email=form.email.data,
-                remember=form.remember.data,
-                first_name=form.first_name.data,
-                second_name=form.second_name.data,
-            )
-            student_type = request.form.get("student-button")
-            if student_type:
-                user.user_type = "student"
-            else:
-                user.user_type = "teacher"
-            user.set_password(form.password.data)
-            db_sess.add(user)
-            db_sess.commit()
-            login_user(user, remember=form.remember.data)
-            return redirect("/profile")
+            if not db_sess.query(Users).filter(Users.email == form.email.data):
+                user = Users(
+                    email=form.email.data,
+                    remember=form.remember.data,
+                    first_name=form.first_name.data,
+                    second_name=form.second_name.data,
+                )
+                student_type = request.form.get("student-button")
+                if student_type:
+                    user.user_type = "student"
+                else:
+                    user.user_type = "teacher"
+                user.set_password(form.password.data)
+                db_sess.add(user)
+                db_sess.commit()
+                login_user(user, remember=form.remember.data)
+                return redirect("/profile")
+            form.email.errors.append("Пользователь с данным e-mail же зарегистрирован")
         return render_template("register.html", title="Регистрация", form=form)
     return redirect("/profile")
 
@@ -375,6 +377,12 @@ def works_beginning(work_id):
         # TODO: show results by students
         return render_template("works_beginning.html", title=work.name, form=form, work=work)
     return render_template("works_beginning.html", title=work.name, form=form, work=work)
+
+
+@app.route("/works")
+@login_required
+def works():
+    return ""
 
 
 @app.route("/logout")
