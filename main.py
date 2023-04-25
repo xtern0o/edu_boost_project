@@ -27,6 +27,8 @@ from forms.edit_work_form import EditWorkForm
 from forms.create_question_form import CreateQuestionForm
 from forms.edit_question_form import EditQuestionForm
 
+import datetime
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "maxkarnandjenyalol"
@@ -290,32 +292,41 @@ def edit_works(work_id):
     if change_work_form.validate_on_submit():
         name = request.form.get('name')
         work.name = name
+        deadline = request.form.get('deadline')
+        deadline = datetime.datetime.strptime(deadline, '%Y-%m-%dT%H:%M')
+        work.deadline = deadline
         db_sess.commit()
-        print('name')
+    elif edit_question.validate_on_submit() and request.form.get('question_id'):
+        quest_id = request.form.get('question_id')
+        text = request.form.get('text')
+        title = request.form.get('title')
+        correct_answer = request.form.get('correct_answer')
+        points = request.form.get('points')
+        question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
+        question.text = text
+        question.header = title
+        question.correct_answer = correct_answer
+        question.points = points
+        db_sess.commit()
     elif create_question_form.validate_on_submit():
         question = Questions()
         title = request.form.get('title')
         text = request.form.get('text')
         correct_answer = request.form.get('correct_answer')
         points = request.form.get('points')
-        deadline = request.form.get('deadline')
         question.header = title
         question.text = text
         question.correct_answer = correct_answer
         question.answer_type = 'text'
         question.work = work
+        question.points = points
         db_sess.add(question)
         db_sess.commit()
-    elif edit_question.validate_on_submit():
-        quest_id = request.form.get('question_id')
-        text = request.form.get('text')
 
-        question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
-        question.text = text
-        db_sess.commit()
     data = {
         'work_name': work.name,
-        'questions': work.questions
+        'questions': work.questions,
+        'deadline': work.deadline
     }
     return render_template('work_editing.html', change_work_form=change_work_form,
                            create_question_form=create_question_form, edit_question=edit_question, **data)
@@ -326,23 +337,25 @@ def edit_works(work_id):
 def create_works():
     form = CreateWorkForm()
     if form.validate_on_submit():
-        print('aaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa')
         db_sess = db_session.create_session()
         user = db_sess.query(Users).filter(Users.id == current_user.id).first()
         name = request.form.get('name')
         info = request.form.get('info')
         deadline = request.form.get('deadline')
-        deadline = datetime.datetime.strptime(deadline, '%d.%m.%Y %H:%')
+        deadline = datetime.datetime.strptime(deadline, '%Y-%m-%dT%H:%M')
+        time = request.form.get('time')
+        time = datetime.datetime.strptime(time, '%H:%M').time()
         work = Works()
         work.name = name
         work.info = info
         work.creator = user
         work.deadline = deadline
+        work.time = time
+        work.is_published = 0
         db_sess.add(work)
         db_sess.commit()
         id = work.id
-        print(id)
-        return "123123"
+        return redirect(url_for('edit_works', work_id=id))
     return render_template('work_creating.html', form=form)
 
 

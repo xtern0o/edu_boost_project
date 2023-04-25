@@ -13,20 +13,31 @@
     </div>
     <div class="form-group">
         {{ form.info(class="form-control", placeholder="Информация о работе") }}
-         {% for error in form.info.errors %}
+        {% for error in form.info.errors %}
         <p class="alert alert-danger align-center" role="alert">
             {{ error }}
         </p>
         {% endfor %}
     </div>
-    <div class="col form-group">
-        {{form.deadline.label}}
-        {{ form.deadline(class="form-control", placeholder="Дата сдачи") }}
-           {% for error in form.deadline.errors %}
-        <p class="alert alert-danger align-center" role="alert">
-            {{ error }}
-        </p>
-        {% endfor %}
+    <div class="row form-group">
+        <div class="col" style="padding-left: 0px">
+            {{ form.time.label }}
+            {{ form.time(class="form-control", placeholder="Время выполнения") }}
+            {% for error in form.time.errors %}
+            <p class="alert alert-danger align-center" role="alert">
+                {{ error }}
+            </p>
+            {% endfor %}
+        </div>
+        <div class="col" style="padding-right: 0px">
+            {{ form.deadline.label }}
+            {{ form.deadline(class="form-control", placeholder="Дата сдачи") }}
+            {% for error in form.deadline.errors %}
+            <p class="alert alert-danger align-center" role="alert">
+                {{ error }}
+            </p>
+            {% endfor %}
+        </div>
     </div>
     <div class="form-group">
         {{ form.submit(class="btn btn-success") }}

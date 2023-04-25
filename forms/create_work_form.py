@@ -1,11 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, TextAreaField, DateTimeField
+from wtforms import SubmitField, StringField, TextAreaField
 from wtforms.validators import DataRequired, Length
-from wtforms.fields import DateTimeLocalField
+from wtforms.fields import DateTimeLocalField, TimeField
 
 
 class CreateWorkForm(FlaskForm):
     name = StringField(validators=[DataRequired()])
     info = TextAreaField("Описание группы", validators=[DataRequired()])
-    deadline = DateTimeLocalField("qwe", format="%Y-%m-%dT%H:%M", validators=[DataRequired()])
+    deadline = DateTimeLocalField("Дата сдачи", format="%Y-%m-%dT%H:%M", validators=[DataRequired()])
+    time = TimeField('Время выполнения', validators=[DataRequired()])
     submit = SubmitField("Создать новый тест")

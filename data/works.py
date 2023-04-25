@@ -22,6 +22,7 @@ class Works(SqlAlchemyBase):
     info = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     time = sqlalchemy.Column(sqlalchemy.Time, nullable=True)
     deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
+    is_published = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
 
     # orm-отношения
     groups = orm.relationship('Groups', secondary='works_to_groups', backref="in_groups")
