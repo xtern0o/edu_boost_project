@@ -39,6 +39,8 @@
             {% endfor %}
         </div>
     </div>
+    {{ form.group.label }}
+    {{ form.group(class="form-select") }}
     <div class="form-group">
         {{ form.submit(class="btn btn-success") }}
     </div>

@@ -15,6 +15,9 @@
     <div class="col-auto">
         {{ change_work_form.submit(class="btn btn-secondary mb-3") }}
     </div>
+    <div class="col" style="text-align: right; font-size: 25px">
+        <p>Баллы: {{ max_points }}</p>
+    </div>
 </form>
 
 <div class="questions">
@@ -25,22 +28,23 @@
             <form action="" method="post">
                 {{ edit_question.hidden_tag() }}
                 <div>
-                    <label for="title">Заголовок</label>
+                    {{ edit_question.title.label }}
                     {{ edit_question.title(class="form-control", value=question.header) }}
                 </div>
                 <div style="margin-top: 5px;">
-                    <label for="text">Вопрос</label>
+                    {{ edit_question.text.label }}
                     {{ edit_question.text(class="form-control", value=question.text) }}
                 </div>
                 <div style="margin-top: 5px;">
-                    <label for="correct_answer">Правильный ответ</label>
+                    {{ edit_question.correct_answer.label }}
                     {{ edit_question.correct_answer(class="form-control", value=question.correct_answer) }}
                 </div>
                 <div class="col">
-                    <label for="points">Баллы</label>
+                    {{ edit_question.points.label }}
                     {{ edit_question.points(class="form-control", placeholder="Баллы", value=question.points) }}
                 </div>
                 <div style="margin-top: 10px;" align="right">
+                    {{ edit_question.delete(class="btn btn-danger") }}
                     {{ edit_question.submit(class="btn btn-secondary") }}
                 </div>
                 {{ edit_question.question_id(hidden=True, value=question.id) }}
@@ -58,9 +62,25 @@
 </div>
 
 <div class="add-question-block">
-    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#QuestionModal">
-        Добавить вопрос
-    </button>
+    <div class="row">
+        <button type="button" class="btn btn-success col-auto" style="margin-left: 12px" data-bs-toggle="modal"
+                data-bs-target="#QuestionModal">
+            Добавить вопрос
+        </button>
+        <div class="col">
+            <form action="" method="post">
+                {{ publish_work_form.hidden_tag() }}
+                <div align="right">
+                    {% if work_is_published %}
+                    {{ publish_work_form.submit(class="btn btn-warning", value="Снять с публикации") }}
+                    {% else %}
+                    {{ publish_work_form.submit(class="btn btn-warning") }}
+                    {% endif %}
+                    {{ publish_work_form.work_id(hidden=True, value=work_id) }}
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="modal fade" id="QuestionModal" tabindex="-1" aria-labelledby="QuestionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

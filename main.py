@@ -26,6 +26,7 @@ from forms.works_beginning_form import WorksBeginningForm
 from forms.edit_work_form import EditWorkForm
 from forms.create_question_form import CreateQuestionForm
 from forms.edit_question_form import EditQuestionForm
+from forms.publish_work_form import PublishWorkForm
 
 import datetime
 
@@ -133,7 +134,7 @@ def registration():
         form = RegisterForm()
         if form.validate_on_submit():
             db_sess = db_session.create_session()
-            if not db_sess.query(Users).filter(Users.email == form.email.data):
+            if not db_sess.query(Users).filter(Users.email == form.email.data).first():
                 user = Users(
                     email=form.email.data,
                     remember=form.remember.data,
@@ -289,6 +290,7 @@ def edit_works(work_id):
     change_work_form = EditWorkForm()
     create_question_form = CreateQuestionForm()
     edit_question = EditQuestionForm()
+    publish_work = PublishWorkForm()
     db_sess = db_session.create_session()
     work = db_sess.query(Works).filter(Works.id == work_id).first()
     if change_work_form.validate_on_submit():
@@ -300,15 +302,23 @@ def edit_works(work_id):
         db_sess.commit()
     elif edit_question.validate_on_submit() and request.form.get('question_id'):
         quest_id = request.form.get('question_id')
-        text = request.form.get('text')
-        title = request.form.get('title')
-        correct_answer = request.form.get('correct_answer')
-        points = request.form.get('points')
         question = db_sess.query(Questions).filter(Questions.id == quest_id).first()
-        question.text = text
-        question.header = title
-        question.correct_answer = correct_answer
-        question.points = points
+        if request.form.get('delete'):
+            db_sess.delete(question)
+        else:
+            text = request.form.get('text')
+            title = request.form.get('title')
+            correct_answer = request.form.get('correct_answer')
+            points = request.form.get('points')
+            question.text = text
+            question.header = title
+            question.correct_answer = correct_answer
+            question.points = points
+        db_sess.commit()
+    elif publish_work.validate_on_submit() and request.form.get('work_id'):
+        work_id = request.form.get('work_id')
+        work = db_sess.query(Works).filter(Works.id == work_id).first()
+        work.is_published = 1 if work.is_published == 0 else 0
         db_sess.commit()
     elif create_question_form.validate_on_submit():
         question = Questions()
@@ -324,29 +334,39 @@ def edit_works(work_id):
         question.points = points
         db_sess.add(question)
         db_sess.commit()
-
+    max_points = 0
+    for question in work.questions:
+        max_points += question.points
     data = {
         'work_name': work.name,
         'questions': work.questions,
-        'deadline': work.deadline
+        'deadline': work.deadline,
+        'max_points': max_points,
+        'work_is_published': work.is_published,
+        'work_id': work.id,
     }
     return render_template('work_editing.html', change_work_form=change_work_form,
-                           create_question_form=create_question_form, edit_question=edit_question, **data)
+                           create_question_form=create_question_form, edit_question=edit_question,
+                           publish_work_form=publish_work, **data)
 
 
 @app.route('/works/creating', methods=['GET', 'POST'])
 @login_required
 def create_works():
     form = CreateWorkForm()
+    db_sess = db_session.create_session()
+    groups = db_sess.query(Groups).filter(Groups.teacher_id == current_user.id).all()
+    form.group.choices = [(group.id, group.name) for group in groups]
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
         user = db_sess.query(Users).filter(Users.id == current_user.id).first()
         name = request.form.get('name')
         info = request.form.get('info')
         deadline = request.form.get('deadline')
+        group_id = request.form.get('group')
         deadline = datetime.datetime.strptime(deadline, '%Y-%m-%dT%H:%M')
         time = request.form.get('time')
         time = datetime.datetime.strptime(time, '%H:%M').time()
+        group = db_sess.query(Groups).filter(Groups.id == group_id).first()
         work = Works()
         work.name = name
         work.info = info
@@ -355,10 +375,24 @@ def create_works():
         work.time = time
         work.is_published = 0
         db_sess.add(work)
+        group.works.append(work)
         db_sess.commit()
         id = work.id
         return redirect(url_for('edit_works', work_id=id))
-    return render_template('work_creating.html', form=form)
+    return render_template('work_creating.html', form=form, groups=groups)
+
+
+@app.route('/works')
+@login_required
+def works_review():
+    works = list()
+    groups = current_user.groups
+    for group in groups:
+        works.extend(group.works)
+    data = {
+        'works': works
+    }
+    return render_template('works_review.html')
 
 
 @app.route("/works/<int:work_id>", methods=["GET", "POST"])
@@ -379,17 +413,11 @@ def works_beginning(work_id):
     return render_template("works_beginning.html", title=work.name, form=form, work=work)
 
 
-@app.route("/works")
-@login_required
-def works():
-    return ""
-
-
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect("/login")
+    return redirect(url_for('login'))
 
 
 @app.errorhandler(405)

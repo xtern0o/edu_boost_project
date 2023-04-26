@@ -5,8 +5,9 @@ from wtforms.validators import DataRequired, Length
 
 class EditQuestionForm(FlaskForm):
     question_id = StringField()
-    title = StringField(validators=[DataRequired()])
-    text = StringField(validators=[DataRequired()])
-    correct_answer = StringField(validators=[DataRequired()])
-    points = IntegerField(validators=[DataRequired()])
+    title = StringField('Заголовок', validators=[DataRequired()])
+    text = StringField('Вопрос', validators=[DataRequired()])
+    correct_answer = StringField('Правильный ответ', validators=[DataRequired()])
+    points = IntegerField('Баллы', validators=[DataRequired()])
     submit = SubmitField('Изменить')
+    delete = SubmitField('Удалить')

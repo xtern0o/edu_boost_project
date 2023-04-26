@@ -39,7 +39,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active hover-link hover-a" style="color: black"
-                                   href="{{ url_for('works') }}">Задания</a>
+                                   href="{{ url_for('works_review') }}">Задания</a>
                             </li>
                             {% elif current_user.user_type == "teacher" %}
                             <li class="nav-item">
@@ -52,7 +52,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active hover-link hover-a" style="color: black"
-                                   href="{{ url_for('works') }}">Задания</a>
+                                   href="{{ url_for('works_review') }}">Задания</a>
                             </li>
                             <!-- Что то еще я не придумал !-->
                             {% endif %}
