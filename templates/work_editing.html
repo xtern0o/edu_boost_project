@@ -4,55 +4,54 @@
 
 <form class="row g-3" method="post" action="">
 
-    {{ change_work_name_form.hidden_tag() }}
+    {{ change_work_form.hidden_tag() }}
 
     <div class="col-auto">
-        {{ change_work_name_form.name(class="form-control", value=work_name) }}
+        {{ change_work_form.name(class="form-control", value=work_name) }}
     </div>
     <div class="col-auto">
-        {{ change_work_name_form.submit(class="btn btn-secondary mb-3") }}
+        {{ change_work_form.deadline(class="form-control", placeholder="Дата сдачи", value=deadline) }}
+    </div>
+    <div class="col-auto">
+        {{ change_work_form.submit(class="btn btn-secondary mb-3") }}
+    </div>
+    <div class="col" style="text-align: right; font-size: 25px">
+        <p>Баллы: {{ max_points }}</p>
     </div>
 </form>
 
 <div class="questions">
     {% if questions %}
-        {% for question in questions %}
-        <div class="card edit-question">
-            <div class="card-body">
-                <!-- Изменение header'a -->
-                <form class="row g-3" action="" method="post">
-                    {{ change_question_title.hidden_tag() }}
-                    <div class="col-auto">
-                        {{ change_question_title.title(class="form-control", value=question.header) }}
-                    </div>
-                    <div class="col-auto">
-                        {{ change_question_title.submit(class="btn btn-secondary mb-3") }}
-                    </div>
-                    {{ change_question_title.question_id(hidden=True, value=question.id) }}
-                </form>
-                <!-- Изменение текста вопроса -->
-                <form action="" method="post">
-                    {{ change_question_text.hidden_tag() }}
-                    <label for="text">Вопрос</label>
-                    <div class="input-group mb-3">
-                            {{ change_question_text.text(class="form-control", value=question.text) }}
-                            {{ change_question_text.submit(class="btn btn-secondary") }}
-                    </div>
-                    {{ change_question_text.question_id(hidden=True, value=question.id) }}
-                </form>
-                <!-- Изменение правильного ответа -->
-                <form action="" method="post">
-                    {{ change_question_correct_answer.hidden_tag() }}
-                    <label for="correct_answer">Правильный ответ</label>
-                    <div class="input-group">
-                        {{ change_question_correct_answer.correct_answer(class="form-control", value=question.correct_answer) }}
-                        {{ change_question_correct_answer.submit(class="btn btn-secondary") }}
-                    </div>
-                    {{ change_question_correct_answer.question_id(hidden=True, value=question.id) }}
-                </form>
-            </div>
+    {% for question in questions %}
+    <div class="card edit-question">
+        <div class="card-body">
+            <form action="" method="post">
+                {{ edit_question.hidden_tag() }}
+                <div>
+                    {{ edit_question.title.label }}
+                    {{ edit_question.title(class="form-control", value=question.header) }}
+                </div>
+                <div style="margin-top: 5px;">
+                    {{ edit_question.text.label }}
+                    {{ edit_question.text(class="form-control", value=question.text) }}
+                </div>
+                <div style="margin-top: 5px;">
+                    {{ edit_question.correct_answer.label }}
+                    {{ edit_question.correct_answer(class="form-control", value=question.correct_answer) }}
+                </div>
+                <div class="col">
+                    {{ edit_question.points.label }}
+                    {{ edit_question.points(class="form-control", placeholder="Баллы", value=question.points) }}
+                </div>
+                <div style="margin-top: 10px;" align="right">
+                    {{ edit_question.delete(class="btn btn-danger") }}
+                    {{ edit_question.submit(class="btn btn-secondary") }}
+                </div>
+                {{ edit_question.question_id(hidden=True, value=question.id) }}
+            </form>
         </div>
-        {% endfor %}
+    </div>
+    {% endfor %}
     {% else %}
     <div class="card">
         <div class="card-body">
@@ -63,41 +62,65 @@
 </div>
 
 <div class="add-question-block">
-    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#QuestionModal">
-        Добавить вопрос
-    </button>
-  
+    <div class="row">
+        <button type="button" class="btn btn-success col-auto" style="margin-left: 12px" data-bs-toggle="modal"
+                data-bs-target="#QuestionModal">
+            Добавить вопрос
+        </button>
+        <div class="col">
+            <form action="" method="post">
+                {{ publish_work_form.hidden_tag() }}
+                <div align="right">
+                    {% if work_is_published %}
+                    {{ publish_work_form.submit(class="btn btn-warning", value="Снять с публикации") }}
+                    {% else %}
+                    {{ publish_work_form.submit(class="btn btn-warning") }}
+                    {% endif %}
+                    {{ publish_work_form.work_id(hidden=True, value=work_id) }}
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="modal fade" id="QuestionModal" tabindex="-1" aria-labelledby="QuestionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-        <form action="" method="post" name="123">
-            {{ create_question_form.hidden_tag() }}
-            <div class="modal-content">
-                <div class="modal-header">
-                <h1 class="modal-title fs-5" id="QuestionModalLabel">Новый вопрос</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">Заголовок</span>
-                            {{ create_question_form.title(class="form-control", aria_label="Sizing example input", aria_describedby="inputGroup-sizing-default") }}
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">Вопрос</span>
-                            {{ create_question_form.text(class="form-control", aria_label="Sizing example input", aria_describedby="inputGroup-sizing-default") }}
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">Правильный ответ</span>
-                            {{ create_question_form.correct_answer(class="form-control", aria_label="Sizing example input", aria_describedby="inputGroup-sizing-default") }}
+            <form action="" method="post">
+                {{ create_question_form.hidden_tag() }}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="QuestionModalLabel">Новый вопрос</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Заголовок</span>
+                                {{ create_question_form.title(class="form-control", aria_label="Sizing example input",
+                                aria_describedby="inputGroup-sizing-default") }}
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Вопрос</span>
+                                {{ create_question_form.text(class="form-control", aria_label="Sizing example input",
+                                aria_describedby="inputGroup-sizing-default") }}
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Правильный ответ</span>
+                                {{ create_question_form.correct_answer(class="form-control", aria_label="Sizing example
+                                input", aria_describedby="inputGroup-sizing-default") }}
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Баллы за вопрос</span>
+                                {{ create_question_form.points(class="form-control", aria_label="Sizing example
+                                input", aria_describedby="inputGroup-sizing-default") }}
+                            </div>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        {{ create_question_form.submit(class="btn btn-success") }}
+                    </div>
                 </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                {{ create_question_form.submit(class="btn btn-success") }}
-                </div>
-            </div>
-        </form>
+            </form>
         </div>
     </div>
 </div>

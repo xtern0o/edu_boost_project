@@ -14,6 +14,7 @@ class Questions(SqlAlchemyBase):
     text = sqlalchemy.Column(sqlalchemy.String)
     answer_type = sqlalchemy.Column(sqlalchemy.String)
     correct_answer = sqlalchemy.Column(sqlalchemy.String)
+    points = sqlalchemy.Column(sqlalchemy.Integer)
 
     # orm-отношения
     work = orm.relationship("Works")
