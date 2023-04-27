@@ -72,6 +72,7 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ url_for('profile') }}">Личный кабинет</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('chat') }}">Чат</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('apikey_show', user_id=current_user.id) }}">Ключ для API-доступа</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

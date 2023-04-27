@@ -2,6 +2,7 @@ import sqlalchemy
 from sqlalchemy import orm
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy_serializer import SerializerMixin
 
 from .db_session import SqlAlchemyBase
 
@@ -24,7 +25,7 @@ users_to_invites_to_groups_table = sqlalchemy.Table(
 )
 
 
-class Users(SqlAlchemyBase, UserMixin):
+class Users(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'users'
 
     # Поля таблица
@@ -36,6 +37,7 @@ class Users(SqlAlchemyBase, UserMixin):
     second_name = sqlalchemy.Column(sqlalchemy.String)
     profile_photo = sqlalchemy.Column(sqlalchemy.BLOB, default=None)
     user_type = sqlalchemy.Column(sqlalchemy.String, default="student")
+    apikey = sqlalchemy.Column(sqlalchemy.String)
 
     # orm-отношения
     groups = orm.relationship('Groups', secondary='users_to_groups', backref='groups')
@@ -53,3 +55,9 @@ class Users(SqlAlchemyBase, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def set_apikey(self, apikey):
+        self.apikey = generate_password_hash(apikey)
+
+    def check_apikey(self, apikey):
+        return check_password_hash(self.apikey, apikey)
