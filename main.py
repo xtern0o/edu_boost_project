@@ -46,6 +46,8 @@ api.add_resource(groups_resources.GroupsResource, '/api/groups/<int:group_id>')
 # апи-сервис для put-запроса
 api.add_resource(groups_resources.GroupsPutResource, '/api/groups/<int:group_id>')
 
+print(api.resources)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
