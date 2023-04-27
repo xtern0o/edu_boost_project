@@ -384,7 +384,7 @@ def works_beginning(work_id):
                 return redirect("/works/<int:work_id>/1")
             # TODO: show mark
             return render_template("works_beginning.html", title=work.name, form=form, work=work)
-        # TODO: show results by students
+        # TODO: show results by students.
         return render_template("works_beginning.html", title=work.name, form=form, work=work)
     return render_template("works_beginning.html", title=work.name, form=form, work=work)
 
