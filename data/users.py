@@ -2,6 +2,7 @@ import sqlalchemy
 from sqlalchemy import orm
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy_serializer import SerializerMixin
 
 from .db_session import SqlAlchemyBase
 
@@ -24,7 +25,7 @@ users_to_invites_to_groups_table = sqlalchemy.Table(
 )
 
 
-class Users(SqlAlchemyBase, UserMixin):
+class Users(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'users'
 
     # Поля таблица

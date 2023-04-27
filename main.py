@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, flash, get_flashed_messages,
     url_for, abort, jsonify, request, session, make_response
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user, user_unauthorized
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask_restful import reqparse, abort, Api, Resource
+from flask_restful import Api
 
 import datetime as dt
 from statistics import mean
@@ -17,6 +17,8 @@ from data.questions import Questions
 from data.works import Works
 from data.options import Options
 from data.solved_works import SolvedWorks
+
+from resources import groups_resources
 
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
@@ -37,6 +39,13 @@ app.config["SECRET_KEY"] = "maxkarnandjenyalol"
 
 api = Api(app)
 
+# апи-сервис для списка объектов
+api.add_resource(groups_resources.GroupsListResource, '/api/groups')
+# апи-сервис для одного объекта
+api.add_resource(groups_resources.GroupsResource, '/api/groups/<int:group_id>')
+# апи-сервис для put-запроса
+api.add_resource(groups_resources.GroupsPutResource, '/api/groups/<int:group_id>')
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -49,7 +58,6 @@ def generate_new_apikey() -> str:
     while db_sess.query(Users).filter(Users.apikey == apikey).first():
         apikey = ''.join(choices(ascii_letters + digits, k=16))
     return apikey
-
 
 
 def choose_socket_host():
