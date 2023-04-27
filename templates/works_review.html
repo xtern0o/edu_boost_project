@@ -1,15 +1,69 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if current_user.user_type == 'student' %}
 <h2>Тесты</h2>
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">test_name</h5>
-        <p class="card-text">Учитель: teacher_name</p>
-        <div class="input-group">
-            <button class="btn btn-outline-success" type="button">Начать
-            </button>
+
+{% for work in process_works %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ work.name }}</h5>
+            <p class="card-text">Учитель: {{ work.creator.first_name }} {{ work.creator.second_name }}
+                <br> Информация: {{ work.info }}
+                <br> Тест открыт до: {{ work.deadline }}</p>
+            <div class="input-group">
+                {{ form.submit(class="btn btn-outline-warning", value="Продолжить") }}
+            </div>
+        </div>
+        <div> {{ form.work_id(hidden=True, value=work.id) }}</div>
+        <div> {{ form.action(hidden=True, value="continue") }}</div>
+    </div>
+</form>
+{% endfor %}
+{% for work in start_works %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ work.name }}</h5>
+            <p class="card-text">Учитель: {{ work.creator.first_name }} {{ work.creator.second_name }}
+                <br> Информация: {{ work.info }}</p>
+            <div class="input-group">
+                {{ form.submit(class="btn btn-outline-success") }}
+            </div>
+        </div>
+        <div> {{ form.work_id(hidden=True, value=work.id) }}</div>
+        <div> {{ form.action(hidden=True, value="start") }}</div>
+    </div>
+</form>
+{% endfor %}
+{% else %}
+<div>
+    <h2>Результаты тестов</h2>
+</div>
+{% for work in works %}
+<div class="container text-center">
+    <div class="row bg-result">
+        <div class="col">
+            {{ work.name }}
+        </div>
+        <div class="col">
+            {% for solved_work in work.solved %}
+            <div class="row">
+                <p>
+                    Ученик: {{ solved_work.solved_user.first_name }} {{ solved_work.solved_user.second_name }} <br>
+                    Оценка: {{ solved_work.mark }}
+                </p>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
+{% endfor %}
+<div align="right">
+    <a href="{{ url_for('create_works') }}" class="btn btn-success">Создать новый тест</a>
+</div>
+{% endif %}
 {% endblock %}

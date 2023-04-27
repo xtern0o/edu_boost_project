@@ -29,3 +29,4 @@ class Works(SqlAlchemyBase):
     creator = orm.relationship('Users')
     questions = orm.relationship("Questions", back_populates="work")
     solved = orm.relationship('SolvedWorks', back_populates="solved_work")
+    process = orm.relationship('WorksInProcess', back_populates='process_work')

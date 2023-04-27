@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <h2>Ваша оценка: {{ solved_work.mark }}</h2>
+    </div>
+    {% for question in questions %}
+    <div class="card text-bg-light mb-3">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    {{ work.name }}
+                </div>
+                <div class="col" align="right">
+                    Баллы: {{ question.points }}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ question.header }}</h5>
+            <p class="card-text">{{ question.text }}</p>
+            <p>Правильный ответ: {{ question.correct_answer }} <br>
+            Ваш ответ: {{ temp_answers[question.id] }}</p>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

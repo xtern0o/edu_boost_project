@@ -1,28 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-secondary-subtle">
-    <div class="form-group">
-        <div class="row">
-            <div class="col">
-                <p class="fs-4 fw-bold">
-                    {{ work.name }}
-                </p>
-            </div>
-            <div class="col gap-2 d-md-flex justify-content-md-end">
-                {% if work.time.seconds > work.time.seconds * 0.2 %}
-                <p class="fs-5 badge text-bg-secondary">
-                    {{ work.time.minutes }}:{{ work.time.seconds // work.time.minutes * 60 }}
-                </p>
-                {% else %}
-                <p class="fs-5 badge text-bg-danger">
-                    {{ work.time.minutes }}:{{ work.time.seconds // work.time.minutes * 60 }}
-                </p>
-                {% endif %}
+<div class="row">
+    <div class="col-3">
+        <div class="list-group">
+            {% for question in work.questions %}
+            <a href="{{ url_for('works_doing', work_id=work.id, question_id=question.id) }}"
+               class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ question.header }}</h5>
+                </div>
+                <p class="mb-1">{{ question.text[:20] }}...</p>
+                <small>Баллы: {{ question.points }}</small>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% block question %}
+    <div class="col">
+        <div class="card text-bg-light">
+            <div class="card-header">Начало</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ work.name }}</h5>
+                <p class="card-text">{{ work.info }}</p>
+                <p class="card-text">На выполнение теста: {{ work.time }}</p>
             </div>
         </div>
     </div>
-</div>
+    {% endblock %}
 {% block work_content %}
 {% endblock %}
 

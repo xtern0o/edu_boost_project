@@ -19,3 +19,4 @@ class Questions(SqlAlchemyBase):
     # orm-отношения
     work = orm.relationship("Works")
     options = orm.relationship('Options', back_populates='question')
+    temp_answer = orm.relationship('TempAnswers', back_populates='temp_question')

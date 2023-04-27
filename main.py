@@ -16,6 +16,8 @@ from data.questions import Questions
 from data.works import Works
 from data.options import Options
 from data.solved_works import SolvedWorks
+from data.work_in_process import WorksInProcess
+from data.temp_answers import TempAnswers
 
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
@@ -27,6 +29,9 @@ from forms.edit_work_form import EditWorkForm
 from forms.create_question_form import CreateQuestionForm
 from forms.edit_question_form import EditQuestionForm
 from forms.publish_work_form import PublishWorkForm
+from forms.start_work_form import StartWorkForm
+from forms.input_answer_form import InputAnswerForm
+from forms.send_work_form import SendWorkForm
 
 import datetime
 
@@ -382,35 +387,120 @@ def create_works():
     return render_template('work_creating.html', form=form, groups=groups)
 
 
-@app.route('/works')
+@app.route('/works', methods=['GET', 'POSt'])
 @login_required
 def works_review():
-    works = list()
-    groups = current_user.groups
-    for group in groups:
-        works.extend(group.works)
-    data = {
-        'works': works
-    }
-    return render_template('works_review.html')
+    if current_user.user_type == 'student':
+        form = StartWorkForm()
+        db_sess = db_session.create_session()
+        user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+        if form.validate_on_submit():
+            work_id = request.form.get('work_id')
+            work = db_sess.query(Works).filter(Works.id == work_id).first()
+            process_work = WorksInProcess()
+            process_work.process_user = user
+            process_work.process_work = work
+            db_sess.add(process_work)
+            db_sess.commit()
+            return redirect(url_for('works_beginning', work_id=int(work_id)))
+        start_works = list()
+        process_works = list()
+        groups = user.groups
+        for group in groups:
+            works_group = group.works
+            proc_works = user.process_works
+            solved_works = user.solved_works
+            start_works.extend(db_sess.query(Works).filter(Works.id.in_([work.id for work in works_group])).\
+                filter(Works.is_published == 1).
+                               filter(~Works.id.in_([process_work.process_work.id for process_work in proc_works])).
+                               filter(~Works.id.in_([work.work_id for work in solved_works])).all())
+            process_works.extend(db_sess.query(Works).filter(Works.id.in_([work.id for work in works_group])).\
+                filter(Works.is_published == 1).
+                                 filter(Works.id.in_([process_work.process_work.id for process_work in proc_works])).
+                                 filter(~Works.id.in_([work.work_id for work in solved_works])).all())
+        data = {
+            'start_works': start_works,
+            'process_works': process_works
+        }
+        return render_template('works_review.html', form=form, **data)
+    else:
+        works = current_user.creator
+        return render_template('works_review.html', works=works)
 
 
 @app.route("/works/<int:work_id>", methods=["GET", "POST"])
 @login_required
 def works_beginning(work_id):
-    form = WorksBeginningForm()
     db_sess = db_session.create_session()
-    work = db_sess.query(Works).get(work_id)
-    if form.validate_on_submit():
-        if current_user.user_type == "student":
-            if work not in current_user.solved_works:
-                # TODO: start test
-                return redirect("/works/<int:work_id>/1")
-            # TODO: show mark
-            return render_template("works_beginning.html", title=work.name, form=form, work=work)
-        # TODO: show results by students
-        return render_template("works_beginning.html", title=work.name, form=form, work=work)
-    return render_template("works_beginning.html", title=work.name, form=form, work=work)
+    work = db_sess.query(Works).filter(Works.id == work_id).first()
+    return render_template("works_base.html", work=work)
+
+
+@app.route('/works/<int:work_id>/question/<int:question_id>', methods=["GET", "POST"])
+@login_required
+def works_doing(work_id, question_id):
+    form = InputAnswerForm()
+    send_work_form = SendWorkForm()
+    db_sess = db_session.create_session()
+    question = db_sess.query(Questions).filter(Questions.id == question_id).first()
+    user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+    if send_work_form.validate_on_submit() and request.form.get('work_id'):
+        solved_works = SolvedWorks()
+        work_id = request.form.get('work_id')
+        solved_works.work_id = work_id
+        solved_works.user_id = current_user.id
+        all_answers = user.temp_answers
+        all_points = sum([answer.temp_question.points for answer in all_answers])
+        got_points = sum([answer.temp_question.points for answer in all_answers if answer.temp_answer == answer.temp_question.correct_answer])
+        percent = got_points / all_points
+        if percent < 0.52:
+            solved_works.mark = 2
+        elif 0.52 <= percent < 0.75:
+            solved_works.mark = 3
+        elif 0.75 <= percent < 0.9:
+            solved_works.mark = 4
+        elif 0.9 < percent:
+            solved_works.mark = 5
+        db_sess.add(solved_works)
+        db_sess.commit()
+        return redirect(url_for('work_result', work_id=work_id))
+    elif form.validate_on_submit():
+        answer = request.form.get('answer')
+        temp_ans = db_sess.query(TempAnswers).filter(TempAnswers.user_id == current_user.id).filter(TempAnswers.question_id == question_id).first()
+        if not temp_ans:
+            temp_ans = TempAnswers()
+        temp_ans.temp_question = question
+        temp_ans.user_id = user.id
+        temp_ans.temp_answer = answer
+        db_sess.add(temp_ans)
+        db_sess.commit()
+    work = db_sess.query(Works).filter(Works.id == work_id).first()
+    temp_answer_data = user.temp_answers
+    temp_answers = {answer.question_id: answer.temp_answer for answer in temp_answer_data}
+    data = {
+        'work': work,
+        'question': question,
+        'temp_answers': temp_answers
+    }
+    return render_template('works_question.html', form=form, send_work_form=send_work_form, **data)
+
+
+@app.route('/works/result/<int:work_id>', methods=["GET", "POST"])
+def work_result(work_id):
+    db_sess = db_session.create_session()
+    solved_work = db_sess.query(SolvedWorks).filter(SolvedWorks.work_id == work_id).\
+        filter(SolvedWorks.user_id == current_user.id).first()
+    work = db_sess.query(Works).filter(Works.id == work_id).first()
+    questions = work.questions
+    temp_answer_data = current_user.temp_answers
+    temp_answers = {answer.question_id: answer.temp_answer for answer in temp_answer_data}
+    data = {
+        'solved_work': solved_work,
+        'work': work,
+        'questions': questions,
+        'temp_answers': temp_answers
+    }
+    return render_template('work_result.html', **data)
 
 
 @app.route("/logout")

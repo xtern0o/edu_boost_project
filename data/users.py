@@ -43,7 +43,9 @@ class Users(SqlAlchemyBase, UserMixin):
     sender = orm.relationship('Messages', back_populates='sender')
     creator = orm.relationship('Works', back_populates='creator')
     solved_works = orm.relationship('SolvedWorks', back_populates='solved_user')
+    process_works = orm.relationship('WorksInProcess', back_populates='process_user')
     invites_group = orm.relationship('Groups', secondary='users_to_invites_to_groups', backref='invites')
+    temp_answers = orm.relationship('TempAnswers', back_populates='temp_user')
 
     # функции
     def set_password(self, password):

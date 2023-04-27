@@ -1,0 +1,63 @@
+{% extends "works_base.html" %}
+
+{% block question %}
+
+<div class="col">
+    <div class="card text-bg-light">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    {{ work.name }}
+                </div>
+                <div class="col" align="right">
+                    Баллы: {{ question.points }}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ question.header }}</h5>
+            <p class="card-text">{{ question.text }}</p>
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <div class="input-group">
+                    {{ form.answer(class="form-control", placeholder="Ответ", value=temp_answers.get(question.id, '')) }}
+                    {{ form.submit(class="btn btn-secondary") }}
+                </div>
+                {% for error in form.answer.errors %}
+                <p class="alert alert-danger align-center" role="alert">
+                    {{ error }}
+                </p>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+</div>
+<div align="right">
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#SendWorkModal">
+        Сдать работу
+    </button>
+</div>
+<div class="modal fade" id="SendWorkModal" tabindex="-1" aria-labelledby="SendWorkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="SendWorkModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите сдать работу?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                <form action="" method="post">
+                    {{ send_work_form.hidden_tag() }}
+                    {{ send_work_form.submit(class="btn btn-success") }}
+                    {{ send_work_form.work_id(value=work.id, hidden=true) }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+{% endblock %}
