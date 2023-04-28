@@ -159,6 +159,7 @@ def registration():
         if form.validate_on_submit():
             db_sess = db_session.create_session()
             if not db_sess.query(Users).filter(Users.email == form.email.data).first():
+                code = request.form.get('invite_code')
                 user = Users(
                     email=form.email.data,
                     remember=form.remember.data,
@@ -172,6 +173,10 @@ def registration():
                 else:
                     user.user_type = "teacher"
                 user.set_password(form.password.data)
+                if code:
+                    group = db_sess.query(Groups).filter(Groups.code == code).first()
+                    if group:
+                        user.groups.append(group)
                 db_sess.add(user)
                 db_sess.commit()
                 login_user(user, remember=form.remember.data)
@@ -520,6 +525,7 @@ def works_doing(work_id, question_id):
 
 
 @app.route('/works/result/<int:work_id>', methods=["GET", "POST"])
+@login_required
 def work_result(work_id):
     db_sess = db_session.create_session()
     solved_work = db_sess.query(SolvedWorks).filter(SolvedWorks.work_id == work_id).\
