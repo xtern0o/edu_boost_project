@@ -45,16 +45,16 @@ def format_group_to_dict(group: Groups) -> dict:
     return out
 
 
-parser_1 = reqparse.RequestParser()
-parser_1.add_argument('apikey', required=True, type=str)
+# parser_1 = reqparse.RequestParser()
+# parser_1.add_argument('apikey', required=True, type=str)
 
 parser_2 = reqparse.RequestParser()
-parser_2.add_argument('apikey', required=True, type=str)
+# parser_2.add_argument('apikey', required=True, type=str)
 parser_2.add_argument('name', required=True)
 parser_2.add_argument('invites', required=True, action='append')
 
 parser_3 = reqparse.RequestParser()
-parser_3.add_argument('apikey', required=True, type=str)
+# parser_3.add_argument('apikey', required=True, type=str)
 parser_3.add_argument('name', required=False)
 parser_3.add_argument('invites', action='append')
 
@@ -93,22 +93,22 @@ class GroupsResource(Resource):
 
 
 class GroupsListResource(Resource):
-    def get(self):
-        args = parser_1.parse_args()
-        user = get_user_by_apikey(args['apikey'])
+    def get(self, apikey):
+        user = get_user_by_apikey(apikey)
         abort_if_student(user)
-        teacher_id = user.id
         db_sess = db_session.create_session()
-        groups = db_sess.query(Groups).filter(Groups.teacher_id == teacher_id)
+        user = db_sess.query(Users).get(4)
+        teacher_id = user.id
+        groups = db_sess.query(Groups).filter(Groups.teacher_id == teacher_id).all()
         return jsonify(
             {
                 "groups": [format_group_to_dict(group) for group in groups]
             }
         )
 
-    def post(self):
+    def post(self, apikey):
         args = parser_2.parse_args()
-        user = get_user_by_apikey(args['apikey'])
+        user = get_user_by_apikey(apikey)
         abort_if_student(user)
         teacher_id = user.id
         db_sess = db_session.create_session()

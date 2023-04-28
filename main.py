@@ -46,11 +46,11 @@ app.config["SECRET_KEY"] = "maxkarnandjenyalol"
 api = Api(app)
 
 # апи-сервис для списка объектов
-api.add_resource(groups_resources.GroupsListResource, '/api/groups')
+api.add_resource(groups_resources.GroupsListResource, '/api/groups/<string:apikey>')
 # апи-сервис для одного объекта
-api.add_resource(groups_resources.GroupsResource, '/api/groups/<int:group_id>')
+api.add_resource(groups_resources.GroupsResource, '/api/groups/<string:apikey>/<int:group_id>')
 # апи-сервис для put-запроса
-api.add_resource(groups_resources.GroupsPutResource, '/api/groups/<int:group_id>')
+api.add_resource(groups_resources.GroupsPutResource, '/api/groups/<string:apikey>/<int:group_id>')
 
 print(api.resources)
 
