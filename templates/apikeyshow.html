@@ -31,12 +31,24 @@
         </div>
         <div class="form-group">
             <div class="collapse" id="collapseApikey">
-                <div class="card card-body user-select-all text-muted text-monospace">
-                    {{ apikey }}
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col user-select-all text-muted text-monospace">
+                            {{ apikey }}
+                        </div>
+                        <div class="col">
+                            {{ form.hidden_tag() }}
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                {{ form.change(class="btn btn-primary") }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 
 {% endblock %}

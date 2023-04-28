@@ -35,6 +35,7 @@ from forms.publish_work_form import PublishWorkForm
 from forms.start_work_form import StartWorkForm
 from forms.input_answer_form import InputAnswerForm
 from forms.send_work_form import SendWorkForm
+from forms.change_apikey_form import ChangeApikey
 
 import datetime
 
@@ -469,6 +470,7 @@ def works_doing(work_id, question_id):
     db_sess = db_session.create_session()
     question = db_sess.query(Questions).filter(Questions.id == question_id).first()
     user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+
     if send_work_form.validate_on_submit() and request.form.get('work_id'):
         solved_works = SolvedWorks()
         work_id = request.form.get('work_id')
@@ -528,12 +530,21 @@ def work_result(work_id):
     return render_template('work_result.html', **data)
 
 
-@app.route('/apikeyshow/<int:user_id>')
+@app.route('/apikeyshow/<int:user_id>', methods=["GET", "POST"])
 @login_required
 def apikey_show(user_id):
+    db_sess = db_session.create_session()
     if current_user.id != user_id:
         abort(403)
-    return render_template("apikeyshow.html", title="Apikey", apikey=current_user.apikey)
+    form = ChangeApikey()
+    if form.validate_on_submit():
+        print("111111111111111111111111111")
+        new_apikey = generate_new_apikey()
+        user = db_sess.query(Users).get(current_user.id)
+        user.apikey = new_apikey
+        db_sess.commit()
+        return render_template("apikeyshow,html", title="Apikey", apikey=new_apikey, form=form)
+    return render_template("apikeyshow.html", title="Apikey", apikey=current_user.apikey, form=form)
 
 
 @app.route("/logout")
