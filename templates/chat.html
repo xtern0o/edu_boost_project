@@ -15,7 +15,7 @@
                 <div class="list-group list-group-flush">
                     {% for group in groups %}
                     <a class="list-group-item list-group-item-action"
-                       href="/chat?chat_id={{ group.id }}">
+                       href="{{ url_for('chat', chat_id=group.id) }}">
                         <div
                                 class="float-start small-picture"
                                 style="background-image: url({{ url_for('static', filename='img/erdogan.jpg') }})"
@@ -244,8 +244,7 @@
         $('#form_send_message').on('submit', (e) => {
             e.preventDefault();
         });
-
-        const socket = io.connect('127.0.0.1:5000');
+        const socket = io.connect(document.location.host);
         message_block.scrollTop = message_block.scrollHeight;
 
 

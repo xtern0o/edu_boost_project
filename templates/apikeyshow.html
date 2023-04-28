@@ -2,6 +2,7 @@
 
 {% block content %}
 
+
 <div class="row">
     <div class="col">
         <div class="form-group">
@@ -37,10 +38,12 @@
                             {{ apikey }}
                         </div>
                         <div class="col">
-                            {{ form.hidden_tag() }}
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                {{ form.change(class="btn btn-primary") }}
-                            </div>
+                            <form action="" method="post">
+                                {{ form.hidden_tag() }}
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    {{ form.change(class="btn btn-primary") }}
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

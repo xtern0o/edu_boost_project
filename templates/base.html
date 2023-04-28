@@ -39,7 +39,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active hover-link hover-a" style="color: black"
-                                   href="{{ url_for('works_review') }}">Задания</a>
+                                       href="{{ url_for('works_review') }}">Задания</a>
                             </li>
                             {% elif current_user.user_type == "teacher" %}
                             <li class="nav-item">
@@ -49,6 +49,10 @@
                             <li class="nav-item">
                                 <a class="nav-link active hover-link hover-a" style="color: black"
                                    href="{{ url_for('groups_creating') }}">Создать группу</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active hover-link hover-a" style="color: black"
+                                   href="{{ url_for('create_works') }}">Создать тест</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active hover-link hover-a" style="color: black"
@@ -72,7 +76,9 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ url_for('profile') }}">Личный кабинет</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('chat') }}">Чат</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('apikey_show', user_id=current_user.id) }}">Ключ для API-доступа</a></li>
+                                <li><a class="dropdown-item"
+                                       href="{{ url_for('apikey_show', user_id=current_user.id) }}">Ключ для
+                                    API-доступа</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
@@ -109,8 +115,10 @@
         <div class="row">
             <div class="col">
                 <img src="{{ url_for('static', filename='img/telegram-icon.png') }}" class="footer-icon">
-                <a class="hover-a text-center fs-6" style="margin-bottom: 0px; color: grey" href="https://t.me/chaychus">Мерескин Евгений</a>
-                <a class="hover-a text-center fs-6" style="margin-bottom: 0px; color: grey" href="https://t.me/xterno_tg">Карнажицкий Максим</a>
+                <a class="hover-a text-center fs-6" style="margin-bottom: 0px; color: grey"
+                   href="https://t.me/chaychus">Мерескин Евгений</a>
+                <a class="hover-a text-center fs-6" style="margin-bottom: 0px; color: grey"
+                   href="https://t.me/xterno_tg">Карнажицкий Максим</a>
             </div>
             <div class="col">
                 <p class="text-center fs-6" style="margin-bottom: 0px; color: grey">copyright: 2023</p>

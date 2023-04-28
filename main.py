@@ -68,12 +68,6 @@ def generate_new_apikey() -> str:
     return apikey
 
 
-def choose_socket_host():
-    tunnel = input('input L/N (Local/Ngrok):')
-    with open('./static/', 'w') as js_file:
-        pass
-
-
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -151,11 +145,11 @@ def login():
             if user:
                 if user.check_password(form.password.data):
                     login_user(user, remember=form.remember_me.data)
-                    return redirect(f"/profile/{user.id}")
+                    return redirect(url_for('profile', user_id=user.id))
                 return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
             return render_template("login.html", title="Авторизация", message="Неверный логин или пароль", form=form)
         return render_template("login.html", title="Авторизация", form=form)
-    return redirect("/profile")
+    return redirect(url_for('profile'))
 
 
 @app.route("/register", methods=["POST", "GET"])
@@ -181,16 +175,16 @@ def registration():
                 db_sess.add(user)
                 db_sess.commit()
                 login_user(user, remember=form.remember.data)
-                return redirect("/profile")
+                return redirect(url_for('profile'))
             form.email.errors.append("Пользователь с данным e-mail же зарегистрирован")
         return render_template("register.html", title="Регистрация", form=form)
-    return redirect("/profile")
+    return redirect(url_for('profile'))
 
 
 @app.route("/profile")
 @login_required
 def profile():
-    return redirect(f"/profile/{current_user.id}")
+    return redirect(url_for('profile_userid', user_id=current_user.id))
 
 
 @app.route("/profile/<int:user_id>")
@@ -378,7 +372,7 @@ def edit_works(work_id):
     }
     return render_template('work_editing.html', change_work_form=change_work_form,
                            create_question_form=create_question_form, edit_question=edit_question,
-                           publish_work_form=publish_work, **data)
+                           publish_work_form=publish_work, title='Изменение работы', **data)
 
 
 @app.route('/works/creating', methods=['GET', 'POST'])
@@ -410,7 +404,7 @@ def create_works():
         db_sess.commit()
         id = work.id
         return redirect(url_for('edit_works', work_id=id))
-    return render_template('work_creating.html', form=form, groups=groups)
+    return render_template('work_creating.html', form=form, groups=groups, title='Создать работу')
 
 
 @app.route('/works', methods=['GET', 'POSt'])
@@ -432,6 +426,7 @@ def works_review():
         start_works = list()
         process_works = list()
         groups = user.groups
+
         for group in groups:
             works_group = group.works
             proc_works = user.process_works
@@ -444,14 +439,15 @@ def works_review():
                 filter(Works.is_published == 1).
                                  filter(Works.id.in_([process_work.process_work.id for process_work in proc_works])).
                                  filter(~Works.id.in_([work.work_id for work in solved_works])).all())
+
         data = {
             'start_works': start_works,
             'process_works': process_works
         }
-        return render_template('works_review.html', form=form, **data)
+        return render_template('works_review.html', form=form, title='Просмотр работ', **data)
     else:
         works = current_user.creator
-        return render_template('works_review.html', works=works)
+        return render_template('works_review.html', works=works, title='Просмотр работ')
 
 
 @app.route("/works/<int:work_id>", methods=["GET", "POST"])
@@ -459,7 +455,11 @@ def works_review():
 def works_beginning(work_id):
     db_sess = db_session.create_session()
     work = db_sess.query(Works).filter(Works.id == work_id).first()
-    return render_template("works_base.html", work=work)
+    solved_work = db_sess.query(SolvedWorks).filter(SolvedWorks.work_id == work_id).\
+        filter(SolvedWorks.user_id == current_user.id).first()
+    if solved_work:
+        return redirect(url_for('work_result', work_id=work_id))
+    return render_template("works_base.html", work=work, title='Начало работа')
 
 
 @app.route('/works/<int:work_id>/question/<int:question_id>', methods=["GET", "POST"])
@@ -470,15 +470,22 @@ def works_doing(work_id, question_id):
     db_sess = db_session.create_session()
     question = db_sess.query(Questions).filter(Questions.id == question_id).first()
     user = db_sess.query(Users).filter(Users.id == current_user.id).first()
+    solved_work = db_sess.query(SolvedWorks).filter(SolvedWorks.work_id == work_id).\
+        filter(SolvedWorks.user_id == current_user.id).first()
+    if solved_work:
+        return redirect(url_for('work_result', work_id=work_id))
 
     if send_work_form.validate_on_submit() and request.form.get('work_id'):
         solved_works = SolvedWorks()
         work_id = request.form.get('work_id')
+        work = db_sess.query(Works).filter(Works.id == work_id).first()
         solved_works.work_id = work_id
         solved_works.user_id = current_user.id
+        questions = work.questions
         all_answers = user.temp_answers
-        all_points = sum([answer.temp_question.points for answer in all_answers])
-        got_points = sum([answer.temp_question.points for answer in all_answers if answer.temp_answer == answer.temp_question.correct_answer])
+        all_points = sum([question.points for question in questions])
+        got_points = sum([answer.temp_question.points for answer in all_answers
+                          if answer.temp_answer == answer.temp_question.correct_answer])
         percent = got_points / all_points
         if percent < 0.52:
             solved_works.mark = 2
@@ -509,7 +516,7 @@ def works_doing(work_id, question_id):
         'question': question,
         'temp_answers': temp_answers
     }
-    return render_template('works_question.html', form=form, send_work_form=send_work_form, **data)
+    return render_template('works_question.html', form=form, send_work_form=send_work_form, title='Вопрос', **data)
 
 
 @app.route('/works/result/<int:work_id>', methods=["GET", "POST"])
@@ -527,7 +534,7 @@ def work_result(work_id):
         'questions': questions,
         'temp_answers': temp_answers
     }
-    return render_template('work_result.html', **data)
+    return render_template('work_result.html', title='Результат работы', **data)
 
 
 @app.route('/apikeyshow/<int:user_id>', methods=["GET", "POST"])
@@ -538,13 +545,17 @@ def apikey_show(user_id):
         abort(403)
     form = ChangeApikey()
     if form.validate_on_submit():
-        print("111111111111111111111111111")
         new_apikey = generate_new_apikey()
         user = db_sess.query(Users).get(current_user.id)
         user.apikey = new_apikey
         db_sess.commit()
         return render_template("apikeyshow,html", title="Apikey", apikey=new_apikey, form=form)
     return render_template("apikeyshow.html", title="Apikey", apikey=current_user.apikey, form=form)
+
+
+@app.route('/box')
+def box():
+    return 'чо это?'
 
 
 @app.route("/logout")
