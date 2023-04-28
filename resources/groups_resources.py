@@ -49,11 +49,11 @@ def format_group_to_dict(group: Groups) -> dict:
 
 parser_2 = reqparse.RequestParser()
 parser_2.add_argument('name', required=True)
-parser_2.add_argument('invites', required=True, action='list')
+parser_2.add_argument('invites', required=True, type=str, action='append')
 
 parser_3 = reqparse.RequestParser()
 parser_3.add_argument('name', required=False)
-parser_3.add_argument('invites', required=False, action='list')
+parser_3.add_argument('invites', required=False, type=str, action='append')
 
 
 class GroupsResource(Resource):
@@ -122,7 +122,9 @@ class GroupsListResource(Resource):
                     db_sess.commit()
                 elif isinstance(item, str):
                     email = item
+                    print(email)
                     user = db_sess.query(Users).filter(Users.email == email).first()
+                    print(user)
                     if not user:
                         abort(404, message=f"user at position {i} not found")
                     user.invites_group.append(new_group)
