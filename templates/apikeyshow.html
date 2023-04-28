@@ -2,44 +2,50 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col">
-        <div class="form-group">
-            <div class="card" style="background-color: white;">
-                <div class="card-body">
-                    <div class="card-title fw-bold">
-                        Что такое API-ключ?
-                    </div>
-                    <div class="card-text text-body-secondary">API ключ (Application Programming Interface ключ) -
-                        это уникальный идентификатор, который используется для авторизации запросов к API сервису.
-                        Он позволяет разработчикам и пользователям доступиться к функциональности API,
-                        используя определенные методы и параметры.
+<form action="" method="post">
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <div class="card" style="background-color: white;">
+                    <div class="card-body">
+                        <div class="card-title fw-bold">
+                            Что такое API-ключ?
+                        </div>
+                        <div class="card-text text-body-secondary">API ключ (Application Programming
+                            Interface ключ) -
+                            это уникальный идентификатор, который используется для авторизации
+                            запросов к API сервису.
+                            Он позволяет разработчикам и пользователям доступиться к
+                            функциональности API,
+                            используя определенные методы и параметры.
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col">
-        <div class="form-group">
-            <div class="d-grid gap-2">
-                <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseApikey" role="button"
-                   aria-expanded="false"
-                   aria-controls="collapseApikey">
-                    Узнать свой Api-ключ
-                </a>
+        <div class="col">
+            <div class="form-group">
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseApikey"
+                       role="button"
+                       aria-expanded="false"
+                       aria-controls="collapseApikey">
+                        Узнать свой Api-ключ
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="collapse" id="collapseApikey">
-                <div class="card card-body">
-                    <div class="row">
-                        <div class="col user-select-all text-muted text-monospace">
-                            {{ apikey }}
-                        </div>
-                        <div class="col">
-                            {{ form.hidden_tag() }}
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                {{ form.change(class="btn btn-primary") }}
+            <div class="form-group">
+                <div class="collapse" id="collapseApikey">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col user-select-all text-muted text-monospace">
+                                {{ apikey }}
+                            </div>
+                            <div class="col">
+                                {{ form.hidden_tag() }}
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    {{ form.change(class="btn btn-primary") }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -47,8 +53,7 @@
             </div>
         </div>
     </div>
-</div>
-</div>
-</div>
+</form>
+
 
 {% endblock %}

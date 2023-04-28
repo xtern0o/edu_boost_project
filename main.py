@@ -543,7 +543,7 @@ def apikey_show(user_id):
         user = db_sess.query(Users).get(current_user.id)
         user.apikey = new_apikey
         db_sess.commit()
-        return render_template("apikeyshow,html", title="Apikey", apikey=new_apikey, form=form)
+        return render_template("apikeyshow.html", title="Apikey", apikey=new_apikey, form=form)
     return render_template("apikeyshow.html", title="Apikey", apikey=current_user.apikey, form=form)
 
 
