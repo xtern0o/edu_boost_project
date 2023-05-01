@@ -53,6 +53,52 @@
             </div>
         </div>
     </div>
+    <div class="d-grid gap-2 form-group">
+        <a class="btn btn-secondary"
+           data-bs-toggle="collapse"
+           href="#collapseDocumentation"
+           role="button"
+           aria-expanded="false"
+           aria-controls="collapseDocumentation">
+            Руководство по использованию API
+        </a>
+    </div>
+    <div class="collapse form-group" id="collapseDocumentation">
+        <div class="card card-body">
+            <h3 class="card-title">Руководство по использованию API</h3>
+
+            <div class="row" style="margin: 10px 0px;">
+                <div class="col">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold">Для чего нужен наш API-сервис?</h4>
+                        <p class="card-text">API сервиса Online.edu предоставляет возможность учителям автоматизировать
+                            процессы
+                            работы с группами учеников, выдачи тестов и импорта тестов в удобные для работы форматы
+                            (.json,
+                            .docx)</p>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold">Для кого доступен API?</h4>
+                        <p class="card-text">На данный момент API доступен для пользователей, указавших при регистрации роль "Учитель".
+                        Для таких пользователей API доступен в рамках их доступа (т. е. в рамках групп, которые они создали)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <h4 class="card-title fw-bold">Работа с группами</h4>
+                <p class="card-text">Работа с группами происходит по адресу .../api/groups. Разберем примеры запросов</p>
+                <div class="card card-body bg-secondary-subtle">
+                    <div class="fw-bold">GET-запрос</div>
+                    <div class="font-monospace">https://online.edu/api/groups</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </form>
 
 
