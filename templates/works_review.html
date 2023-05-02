@@ -1,66 +1,86 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if current_user.user_type == 'student' %}
-<h2>Тесты</h2>
+    {% if current_user.user_type == 'student' %}
+        <h2>Тесты</h2>
+        {% if process_works or start_works %}
 
-{% for work in process_works %}
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ work.name }}</h5>
-            <p class="card-text">Учитель: {{ work.creator.first_name }} {{ work.creator.second_name }}
-                <br> Информация: {{ work.info }}
-                <br> Тест открыт до: {{ work.deadline }}</p>
-            <div class="input-group">
-                {{ form.submit(class="btn btn-outline-warning", value="Продолжить") }}
-            </div>
-        </div>
-        <div> {{ form.work_id(hidden=True, value=work.id) }}</div>
-        <div> {{ form.action(hidden=True, value="continue") }}</div>
-    </div>
-</form>
-{% endfor %}
-{% for work in start_works %}
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ work.name }}</h5>
-            <p class="card-text">Учитель: {{ work.creator.first_name }} {{ work.creator.second_name }}
-                <br> Информация: {{ work.info }}</p>
-            <div class="input-group">
-                {{ form.submit(class="btn btn-outline-success") }}
-            </div>
-        </div>
-        <div> {{ form.work_id(hidden=True, value=work.id) }}</div>
-        <div> {{ form.action(hidden=True, value="start") }}</div>
-    </div>
-</form>
-{% endfor %}
-{% else %}
-<div>
-    <h2>Результаты тестов</h2>
-</div>
-{% for work in works %}
-<div class="container text-center">
-    <div class="row bg-result">
-        <div class="col">
-            {{ work.name }}
-        </div>
-        <div class="col">
-            {% for solved_work in work.solved %}
-            <div class="row">
-                <p>
-                    Ученик: {{ solved_work.solved_user.first_name }} {{ solved_work.solved_user.second_name }} <br>
-                    Оценка: {{ solved_work.mark }}
-                </p>
-            </div>
+            {% for work in process_works %}
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ work.name }}</h5>
+                            <p class="card-text">Учитель: {{ work.creator.first_name }} {{ work.creator.second_name }}
+                                <br> Информация: {{ work.info }}
+                                <br> Тест открыт до: {{ work.deadline }}</p>
+                            <div class="input-group">
+                                {{ form.submit(class="btn btn-outline-warning", value="Продолжить") }}
+                            </div>
+                        </div>
+                        <div> {{ form.work_id(hidden=True, value=work.id) }}</div>
+                        <div> {{ form.action(hidden=True, value="continue") }}</div>
+                    </div>
+                </form>
             {% endfor %}
+            {% for work in start_works %}
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ work.name }}</h5>
+                            <p class="card-text">Учитель: {{ work.creator.first_name }} {{ work.creator.second_name }}
+                                <br> Информация: {{ work.info }}</p>
+                            <div class="input-group">
+                                {{ form.submit(class="btn btn-outline-success") }}
+                            </div>
+                        </div>
+                        <div> {{ form.work_id(hidden=True, value=work.id) }}</div>
+                        <div> {{ form.action(hidden=True, value="start") }}</div>
+                    </div>
+                </form>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-success">
+                <h4 class="alert-heading fw-bold">Здесь пока пусто</h4>
+                <p>На данный момент нет работ к выполнению</p>
+                <hr>
+                <p class="mb-0"><a class="hover-a fw-bold text-success" href="{{ url_for('chat') }}">Напишите</a>
+                    в чат группы о своем желании получить новое задание :)</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div>
+            <h2>Результаты тестов</h2>
         </div>
-    </div>
-</div>
-{% endfor %}
-{% endif %}
+        {% if works %}
+            {% for work in works %}
+                <div class="container text-center">
+                    <div class="row bg-result">
+                        <div class="col">
+                            {{ work.name }}
+                        </div>
+                        <div class="col">
+                            {% for solved_work in work.solved %}
+                                <div class="row">
+                                    <p>
+                                        Ученик: {{ solved_work.solved_user.first_name }} {{ solved_work.solved_user.second_name }} <br>
+                                        Оценка: {{ solved_work.mark }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-success">
+                <h4 class="alert-heading fw-bold">Здесь пока пусто</h4>
+                <p>Вы пока не создали ни одной работы.</p>
+                <hr>
+                <p class="mb-0"><a class="hover-a fw-bold text-success" href="{{ url_for('create_works') }}">Создайте</a>
+                    свою собственную работу и следите за успешностью выполнения</p>
+            </div>
+        {% endif %}
+    {% endif %}
 {% endblock %}
