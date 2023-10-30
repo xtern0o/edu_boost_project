@@ -61,13 +61,4 @@
 -   `Flask-SocketIO (version = 5.2.0)`
 > В нашем проекте важны версии библиотек, так что рекомендуется пользоваться версиями, которые прописаны вместе с библиотекой
 
-### Внешний вид проекта
-#### Главная страница
-![image](https://user-images.githubusercontent.com/97905639/233480039-2908be45-5aa2-4a9e-ab41-bce224f5cde6.png)
-#### Личный кабинет
-![image](https://user-images.githubusercontent.com/97905639/233480082-f246af3e-0b81-41a4-bd38-1ac1ecc5234f.png)
-#### Чат
-![image](https://user-images.githubusercontent.com/97905639/233480322-a7d011e8-b059-42b7-a20b-4717a861fdbb.png)
-
-
 # [Презентация](https://docs.google.com/presentation/d/19b075xh-nVXuhlvDGVFSfTAJnSKzY0Q6sH3H2uOOXmA/edit#slide=id.g1e19608e034_3_69)
